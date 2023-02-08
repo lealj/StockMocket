@@ -16,7 +16,7 @@ export class LoginsignuppageComponent {
     var usernameForLoginAttempt = ((document.getElementById("loginUsername") as HTMLInputElement).value);
     var passwordForLoginAttempt = ((document.getElementById("loginPassword") as HTMLInputElement).value);
 
-    if(usernameForLoginAttempt.length > 0 && passwordForLoginAttempt.length > 0)
+    if(usernameForLoginAttempt.length > 0 && passwordForLoginAttempt.length > 0) //prevents a blank input
     {
       //make the input boxes return back to blank
       (document.getElementById("loginUsername") as HTMLInputElement).value = "";
@@ -29,7 +29,10 @@ export class LoginsignuppageComponent {
     }
     else
     {
-
+      //Don't check for the username or password to the database here (blank inputs shouldn't be accepted)
+      //print out "Please enter a valid username or password"
+      //Work on this section when connected to backend to check if username and password exist
+      //if it doesn't, it will enter this section and print an error saying "username or password are incorrect"
     }
   }
 
@@ -40,7 +43,7 @@ export class LoginsignuppageComponent {
     var usernameForSignUpAttempt = ((document.getElementById("signUpUsername") as HTMLInputElement).value);
     var passwordForSignUpAttempt = ((document.getElementById("signUpPassword") as HTMLInputElement).value);
     
-    if(usernameForSignUpAttempt.length > 0 && passwordForSignUpAttempt.length > 0)
+    if(usernameForSignUpAttempt.length > 0 && passwordForSignUpAttempt.length > 0) //prevents a blank input
     {
       //add to the database in this if statement
 
