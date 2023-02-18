@@ -7,11 +7,6 @@ import (
 	"github.com/gorilla/mux"
 )
 
-type Book struct {
-	Name string `json:"name"`
-	Age  int    `json:"age"`
-}
-
 func initializeRouter() {
 	router := mux.NewRouter()
 
