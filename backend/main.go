@@ -3,22 +3,16 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
+	"github.com/gorilla/handlers"
 	"github.com/gorilla/mux"
-	"github.com/rs/cors"
 )
 
-// prints message when called from log.Fatal(...).
-func logRequest(handler http.Handler) http.Handler {
-	return http.HandlerFunc(func(writer http.ResponseWriter, rout *http.Request) {
-		log.Println("Data received from", rout.RemoteAddr)
-		handler.ServeHTTP(writer, rout)
-	})
-}
-
-func initializeRouter() {
+func httpHandler() http.Handler {
 	rout := mux.NewRouter()
 
+	//rest api requests
 	rout.HandleFunc("/users", GetUsers).Methods("GET")
 	rout.HandleFunc("/users/{id}", GetUser).Methods("GET")
 	rout.HandleFunc("/users", CreateUser).Methods("POST")
@@ -28,18 +22,28 @@ func initializeRouter() {
 	rout.HandleFunc("/stocks", GetStocks).Methods("GET")
 	rout.HandleFunc("/stocks/{tick}", GetStock).Methods("GET")
 
-	//cors - Not tested
-	corsMiddleware := cors.New(cors.Options{
-		AllowedOrigins: []string{"http://localhost:4200"},
-		AllowedMethods: []string{"GET", "POST", "PUT", "DELETE"},
-	})
+	//must be last
+	rout.PathPrefix("/").Handler(AngularHandler).Methods("GET")
 
-	handler := corsMiddleware.Handler(rout)
-
-	log.Fatal(http.ListenAndServe(":9000", logRequest(handler)))
+	return handlers.LoggingHandler(os.Stdout,
+		handlers.CORS(
+			handlers.AllowCredentials(),
+			handlers.AllowedHeaders([]string{"X-Requested-With", "Content-Type", "Authorization",
+				"DNT", "Keep-Alive", "User-Agent", "X-Requested-With", "If-Modified-Since",
+				"Cache-Control", "Content-Range", "Range"}),
+			handlers.AllowedMethods([]string{"GET", "POST", "PUT", "HEAD", "OPTIONS"}),
+			handlers.AllowedOrigins([]string{"http://localhost:8080"}),
+			handlers.ExposedHeaders([]string{"DNT", "Keep-Alive", "User-Agent",
+				"X-Requested-With", "If-Modified-Since", "Cache-Control",
+				"Content-Type", "Content-Range", "Range", "Content-Disposition"}),
+			handlers.MaxAge(86400),
+		)(rout))
 }
 
 func main() {
+	host := "127.0.0.1:8080"
 	InitialMigration()
-	initializeRouter()
+	if err := http.ListenAndServe(host, httpHandler()); err != nil {
+		log.Fatalf("Failed to listen on %s: %v", host, err)
+	}
 }
