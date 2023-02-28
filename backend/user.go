@@ -1,6 +1,7 @@
 package main
 
 import (
+	"database/sql"
 	"encoding/json"
 	"log"
 	"net/http"
@@ -11,14 +12,65 @@ import (
 	"gorm.io/gorm"
 )
 
+type Credentials struct {
+	gorm.Model
+
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
+
 type User struct {
 	gorm.Model
+
 	FirstName string `json:"firstname"`
 	LastName  string `json:"lastname"`
 	Email     string `json:"email"`
 	Balance   int    `json:"balance"`
-
 	//stock positions, etc.
+}
+
+func testLogin(writer http.ResponseWriter, rout *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
+	var userCredentials = &Credentials{}
+	err := json.NewDecoder(rout.Body).Decode(&userCredentials)
+
+	// This is a precaution so body is correct
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Getting users with same username that are already in the database
+	result := DB.First(&userCredentials, "password = ?", &userCredentials.Password)
+
+	if err != nil {
+		writer.WriteHeader(http.StatusBadGateway)
+		return
+	}
+
+	existingCredentials := &Credentials{}
+	err = result.Scan(&existingCredentials.Password).Error
+
+	if err != nil {
+		// if no user with the same username, send back code 401
+		if err == sql.ErrNoRows {
+			writer.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		// if error is one of any other type, send 500 status
+		writer.WriteHeader(http.StatusInternalServerError)
+		return
+	}
+
+	// if the passwords don't match, we send back another 401
+	if existingCredentials.Password != userCredentials.Password {
+		writer.WriteHeader(http.StatusUnauthorized)
+	}
+	// When we get here, that means that the passwords matched
+
+	fmt.Fprint(writer, "Request received to log in\n")
+	log.Printf("The passwords matched, the status code should be 200\n")
 }
 
 func GetUsers(writer http.ResponseWriter, rout *http.Request) {
@@ -43,7 +95,6 @@ func GetUser(writer http.ResponseWriter, rout *http.Request) {
 	fmt.Fprint(writer, "Request recieved for user id: ", id, "\n")
 	//prints request info in terminal
 	log.Printf("Request Received for user id: %s\n", id)
-
 	var user []User
 	DB.First(&user, id)
 	json.NewEncoder(writer).Encode(user)

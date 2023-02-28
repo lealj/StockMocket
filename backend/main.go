@@ -13,6 +13,7 @@ func httpHandler() http.Handler {
 	rout := mux.NewRouter()
 
 	//rest api requests
+	rout.HandleFunc("/login", testLogin).Methods("POST")
 	rout.HandleFunc("/users", GetUsers).Methods("GET")
 	rout.HandleFunc("/users/{id}", GetUser).Methods("GET")
 	rout.HandleFunc("/users", CreateUser).Methods("POST")
