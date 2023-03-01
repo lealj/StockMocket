@@ -14,4 +14,10 @@ export class LoginSignUpService {
     const acctInfo = { username: username, password: password };
     return this.client.post("/login", acctInfo).toPromise();
   }
+
+  AddOnSignUp(username: string, password: string): Promise<any> 
+  {
+    const acctInfo = { username: username, password: password };
+    return this.client.post("/signup", acctInfo).toPromise();
+  }
 }
