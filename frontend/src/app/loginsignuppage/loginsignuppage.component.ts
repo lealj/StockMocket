@@ -50,6 +50,10 @@ export class LoginsignuppageComponent implements OnInit
           // Handle login error
           //console.log("username and password NOT passed to backend");
         });
+
+      this.usernameL = '';
+      this.passwordL = '';
+
     }
     else if(this.usernameL.length == 0) //enter if the username field is blank
     {
@@ -86,6 +90,9 @@ export class LoginsignuppageComponent implements OnInit
           // Handle login error
           //console.log("username and password NOT passed to backend");
         });
+        
+        this.usernameSU = '';
+        this.passwordSU = '';
     }
     else if(this.usernameSU.length == 0) //enter if the username field is blank
     {
