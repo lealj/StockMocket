@@ -349,8 +349,8 @@
   <!-- Sign Up Attempt -->
   <h2> Sign Up</h2>
 
-  <input id="signUpUsername" placeholder="Enter a username" type ="text" value = "" />
-  <input id="signUpPassword" placeholder="Enter a password" type ="text" value = "" />
+  <input [(ngModel)]="usernameForSignUpAttempt" id="signUpUsername" placeholder="Enter a username" type ="text" value = "" />
+  <input [(ngModel)]="passwordForSignUpAttempt" id="signUpPassword" placeholder="Enter a password" type ="text" value = "" />
 
   <button (click)="AttemptSignUp()" formtarget=""> Sign Up </button>
  
