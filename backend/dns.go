@@ -27,5 +27,5 @@ func InitialMigration() {
 		fmt.Println("Connection to database successful.")
 	}
 	//Structs here get created as tables in db
-	DB.AutoMigrate(&User{}, &Stock{})
+	DB.AutoMigrate(&User{}, &Stock{}, &Credentials{})
 }
