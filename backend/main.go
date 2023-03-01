@@ -14,7 +14,7 @@ func httpHandler() http.Handler {
 
 	//rest api requests
 	rout.HandleFunc("/credentials/signup", signup).Methods("POST")
-	rout.HandleFunc("/credentials/login", testLogin).Methods("POST")
+	rout.HandleFunc("/credentials/login", login).Methods("POST")
 
 	rout.HandleFunc("/users", GetUsers).Methods("GET")
 	rout.HandleFunc("/users/{id}", GetUser).Methods("GET")
