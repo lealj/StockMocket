@@ -19,12 +19,12 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
-func testLogin(writer http.ResponseWriter, rout *http.Request) {
+func testLogin(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
 	// userCredentials has two field user and pass
 	var userCredentials = &Credentials{}
-	err := json.NewDecoder(rout.Body).Decode(&userCredentials)
+	err := json.NewDecoder(router.Body).Decode(&userCredentials)
 	fmt.Fprint(writer, userCredentials.Username)
 	fmt.Fprint(writer, userCredentials.Password)
 
@@ -69,4 +69,17 @@ func testLogin(writer http.ResponseWriter, rout *http.Request) {
 
 	fmt.Fprint(writer, "Request received to log in\n")
 	log.Printf("The passwords matched, the status code should be 200\n")
+}
+
+func signup(writer http.ResponseWriter, router *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
+	var newCredentials Credentials
+
+	//handles data received from request (json data)
+	json.NewDecoder(router.Body).Decode(&newCredentials)
+	DB.Create(&newCredentials)
+
+	fmt.Fprint(writer, "Successfully saved username and password")
+	json.NewEncoder(writer).Encode(newCredentials)
 }
