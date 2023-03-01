@@ -1,14 +1,16 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http'
-import { lastValueFrom } from 'rxjs'
+import { HttpClient } from '@angular/common/http';
+//import { LoginsignUpService } from "./loginsignuppage.service"
+import { lastValueFrom } from 'rxjs';
 import { last } from 'cypress/types/lodash';
 
 
 //create an interface for account info
 interface interfaceAccountInfo
 {
-  usernameForLoginAttempt: string
-  passwordForLoginAttempt: string
+  username: string
+  password: string
+  
 }
 
 
@@ -19,18 +21,40 @@ interface interfaceAccountInfo
 })
 
 
-export class LoginsignuppageComponent implements OnInit {
+export class LoginsignuppageComponent {
 
+  //constructor(private client: HttpClient) {}
 
   title = 'Stock Mock-et';
   //had to change the variables to this style because it wasn't in the proper format to be sent to the backend!
   //declaring it as "public" is not necessary bc that is implicit
-  usernameForLoginAttempt = '';
-  passwordForLoginAttempt = '';
-  usernameForSignUpAttempt = '';
-  passwordForSignUpAttempt = '';
+  username = '';
+  password = '';
+  accountInfo: interfaceAccountInfo[];
+
+  async AttemptSignUp() {
+    //promise interface
+    LoginSignUpService.AddUserOnSignUp(this.username, this.password).then(
+      accountSignUpInfo => {
+        this.accountSignUpInfo = accountSignUpInfo;
+      }, err => {
+
+      }
+    )
+  }
+
+  //Alternative
+  this.accountInfo = await LoginSignUpService.AddUserOnSignUp(this.username, this.pass)
 
 
+
+
+
+  //create a client for http! (used to pass front end variables to backend)
+
+
+
+/*
   //keep track of account info (username, password)
   //if this doesn't work add "public" in from of "accountInfo"
   accountInfo: interfaceAccountInfo[] = []
@@ -60,7 +84,7 @@ export class LoginsignuppageComponent implements OnInit {
     this.accountInfo = await lastValueFrom(valInfo);
   }
 */
-
+/*
   //this function is called on the log-in button press
   //this is for posting the info
   async AttemptLogin()
@@ -75,6 +99,9 @@ export class LoginsignuppageComponent implements OnInit {
       usernameForLoginAttempt: this.usernameForLoginAttempt,
       passwordForLoginAttempt: this.passwordForLoginAttempt
       })
+
+      loginInfoToSend.toPromise()
+
       console.log("testprint2"); //used to debug and see if the error happens before this log
 
       //await lastValueFrom(infoToSend)
@@ -181,7 +208,7 @@ export class LoginsignuppageComponent implements OnInit {
   }
 
 
-
+*/
 }
 
 
