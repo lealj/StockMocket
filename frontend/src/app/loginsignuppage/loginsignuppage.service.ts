@@ -9,15 +9,15 @@ export class LoginSignUpService {
 
   constructor(private client: HttpClient) { }
 
-  AddOnLogin(username: string, password: string): Promise<any> 
+  AddOnLogin(username: string, password: string): Promise<any>
   {
     const acctInfo = { username: username, password: password };
-    return this.client.post("/login", acctInfo).toPromise();
+    return this.client.post("/credentials/login", acctInfo).toPromise();
   }
 
-  AddOnSignUp(username: string, password: string): Promise<any> 
+  AddOnSignUp(username: string, password: string): Promise<any>
   {
     const acctInfo = { username: username, password: password };
-    return this.client.post("/signup", acctInfo).toPromise();
+    return this.client.post("/credentials/signup", acctInfo).toPromise();
   }
 }
