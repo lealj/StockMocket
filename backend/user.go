@@ -52,7 +52,7 @@ func CreateUser(writer http.ResponseWriter, rout *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	var user User
 
-	fmt.Fprint(writer, "Request recieved to create user\n")
+	fmt.Fprint(writer, "Request received to create user\n")
 	log.Printf("Request Received to create user\n")
 
 	//handles data received from request (json data)

@@ -77,7 +77,14 @@ func signup(writer http.ResponseWriter, router *http.Request) {
 	var newCredentials Credentials
 
 	//handles data received from request (json data)
-	json.NewDecoder(router.Body).Decode(&newCredentials)
+	err := json.NewDecoder(router.Body).Decode(&newCredentials)
+
+	// This is a precaution so body is correct
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	DB.Create(&newCredentials)
 
 	fmt.Fprint(writer, "Successfully saved username and password")
