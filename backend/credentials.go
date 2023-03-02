@@ -19,7 +19,7 @@ type Credentials struct {
 	Password string `json:"password"`
 }
 
-func testLogin(writer http.ResponseWriter, router *http.Request) {
+func login(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
 	// userCredentials has two field user and pass
