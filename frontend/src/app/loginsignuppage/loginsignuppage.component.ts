@@ -89,7 +89,7 @@ export class LoginsignuppageComponent implements OnInit
     if(this.usernameSU.length > 0 && this.passwordSU.length > 0) //ensure they are a valid input (this.usernameL.length > 0 && this.passwordL.length > 0)
     {
       //print the info for the console log to see if the elements are being inputted correctly
-      console.log("Login Information: ");
+      console.log("Sign Up Information: ");
       console.log("Username: ", this.usernameSU);
       console.log("Password: ", this.passwordSU);
 
