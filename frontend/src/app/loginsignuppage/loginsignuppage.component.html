@@ -325,7 +325,7 @@
   <input [(ngModel)]="usernameL" id="loginUsername" placeholder="Enter your username" type ="text" value = "" data-cy="loginUNBox"/>
   <input [(ngModel)]="passwordL" id="loginPassword" placeholder="Enter your password" type ="text" value = "" data-cy="loginPWBox" />
  
-  <button (click)="AttemptLogin()" formtarget=""> Log In </button>
+  <button (click)="AttemptLogin()" formtarget="" data-cy="loginSubmit"> Log In </button>
 
   <!-- this prints out the inputs after each button click -->
   <!-- <div *ngFor="let accountInformation of accountInfo">
@@ -354,5 +354,5 @@
   <input [(ngModel)]="usernameSU" id="signUpUsername" placeholder="Enter a username" type ="text" value = "" data-cy="signUpUNBox" />
   <input [(ngModel)]="passwordSU" id="signUpPassword" placeholder="Enter a password" type ="text" value = "" data-cy="signUpPWBox"/>
 
-  <button (click)="AttemptSignUp()" formtarget=""> Sign Up </button>
+  <button (click)="AttemptSignUp()" formtarget="" data-cy="signUpSubmit"> Sign Up </button>
  
