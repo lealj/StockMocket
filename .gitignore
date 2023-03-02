@@ -39,6 +39,7 @@
 /backend/vendor
 /backend/dist/*
 /node_modules
+/backend/back.exe
 # System files
 .DS_Store
 Thumbs.db
