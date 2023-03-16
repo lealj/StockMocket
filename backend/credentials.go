@@ -17,6 +17,7 @@ type Credentials struct {
 
 	Username string `json:"username"`
 	Password string `json:"password"`
+	Funds    int    `json:"funds"`
 }
 
 func login(writer http.ResponseWriter, router *http.Request) {
@@ -27,6 +28,7 @@ func login(writer http.ResponseWriter, router *http.Request) {
 	err := json.NewDecoder(router.Body).Decode(&userCredentials)
 	fmt.Fprint(writer, userCredentials.Username)
 	fmt.Fprint(writer, userCredentials.Password)
+	fmt.Fprint(writer, userCredentials.Funds)
 
 	// This is a precaution so body is correct
 	if err != nil {
@@ -41,6 +43,7 @@ func login(writer http.ResponseWriter, router *http.Request) {
 
 	fmt.Fprint(writer, existingCredentials.Username)
 	fmt.Fprint(writer, existingCredentials.Password)
+	fmt.Fprint(writer, existingCredentials.Funds)
 	//fmt.Fprint(writer, result)
 
 	if err != nil {
@@ -75,7 +78,8 @@ func signup(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
 	var newCredentials Credentials
-
+	//default variable value
+	newCredentials.Funds = 1000
 	//handles data received from request (json data)
 	err := json.NewDecoder(router.Body).Decode(&newCredentials)
 
@@ -85,6 +89,16 @@ func signup(writer http.ResponseWriter, router *http.Request) {
 		return
 	}
 
+	existingCredentials := &Credentials{}
+	// Getting users with same username that are already in the database
+	DB.Table("credentials").Select("username", "password").Where("username = ?", newCredentials.Username).Scan(&existingCredentials)
+	//check if new signup username already exists
+	if existingCredentials.Username == newCredentials.Username {
+		log.Println("Username already exists")
+		writer.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	//create new user as username doesn't exist already
 	DB.Create(&newCredentials)
 
 	fmt.Fprint(writer, "Successfully saved username and password")

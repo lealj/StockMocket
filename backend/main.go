@@ -12,16 +12,16 @@ import (
 func httpHandler() http.Handler {
 	rout := mux.NewRouter()
 
-	//rest api requests
+	/* API REQUESTS */
+
+	// funcs regarding credentials & user info
 	rout.HandleFunc("/credentials/signup", signup).Methods("POST")
 	rout.HandleFunc("/credentials/login", login).Methods("POST")
 
-	rout.HandleFunc("/users", GetUsers).Methods("GET")
-	rout.HandleFunc("/users/{id}", GetUser).Methods("GET")
-	rout.HandleFunc("/users", CreateUser).Methods("POST")
-	rout.HandleFunc("/users/{id}", UpdateUser).Methods("PUT")
-	rout.HandleFunc("/users/{id}", DeleteUser).Methods("DELETE")
+	// funcs regarding what user owns
+	//rout.HandleFunc("/userstock", GetStocksOwned).Methods("GET")
 
+	// funcs regarding stock and market info
 	rout.HandleFunc("/stocks", GetStocks).Methods("GET")
 	rout.HandleFunc("/stocks/{tick}", GetStock).Methods("GET")
 

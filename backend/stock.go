@@ -8,23 +8,14 @@ import (
 	"gorm.io/gorm"
 )
 
+// For general stock information (fortune 500)
+
 type Stock struct {
 	gorm.Model
 	CompanyName string `json:"companyname"`
 	Ticker      string `json:"ticker"`
 	LatestPrice string `json:"price"`
-	Date        string `json:"date"`
 }
-
-/*
-// schema for individual stock (???)
-type Stock struct {
-	gorm.Model
-	Ticker string `json:"ticker"`
-	Price  string `json:"price"`
-	Date   string `json:"date"`
-}
-*/
 
 func GetStocks(writer http.ResponseWriter, rout *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")

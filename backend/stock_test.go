@@ -1,11 +1,26 @@
 package main
 
 import (
+	"log"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"gorm.io/driver/mysql"
+	"gorm.io/gorm"
 )
+
+// Mock database should already have entry: ID:1 firstname:Test lastname McTest test@gmail.com 0
+func MockDB_Init() *gorm.DB {
+	mock_dns := "root:cici1998@tcp(localhost:3306)/godb?charset=utf8&parseTime=True&loc=Local"
+	mockDB, err := gorm.Open(mysql.Open(mock_dns), &gorm.Config{})
+	if err != nil {
+		log.Fatalf("failed to open mock database: %v", err)
+	}
+
+	return mockDB
+}
 
 func TestGetStocks(t *testing.T) {
 	mockDB := MockDB_Init()

@@ -10,7 +10,6 @@ import (
 var DB *gorm.DB //database variable
 var err error
 
-// CONNECTION TO AWS IS SUCCESSFUL, CREATING SCHEMA IS NOT
 // AWS db connection
 const DNS = "admin:stocksmocks@tcp(stockmock-db.cwhbq98kjirp.us-east-1.rds.amazonaws.com:3306)/godb?charset=utf8&parseTime=True&loc=Local"
 
@@ -27,5 +26,5 @@ func InitialMigration() {
 		fmt.Println("Connection to database successful.")
 	}
 	//Structs here get created as tables in db
-	DB.AutoMigrate(&User{}, &Stock{}, &Credentials{})
+	DB.AutoMigrate(&Stock{}, &Credentials{})
 }
