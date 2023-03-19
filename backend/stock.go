@@ -14,7 +14,7 @@ type Stock struct {
 	gorm.Model
 	CompanyName string `json:"companyname"`
 	Ticker      string `json:"ticker"`
-	LatestPrice string `json:"price"`
+	LatestPrice int `json:"price"`
 }
 
 func GetStocks(writer http.ResponseWriter, rout *http.Request) {
