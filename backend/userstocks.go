@@ -13,7 +13,7 @@ type UserStocks struct {
 	gorm.Model
 	Username	string `json:"username"`
 	Ticker 		string `json:"ticker"`
-	Shares 		int   `json:"shares`
+	Shares 		int   `json:"shares"`
 	// can add variable here summing the prices paid for the stocks, for the calculation of "gains/losses"
 	// so 1 share bought at $50, another share bought at $75 -> $125 total. Future share worth $100. So profit = 100x2 - (50+75) = 200-125=$75
 }
