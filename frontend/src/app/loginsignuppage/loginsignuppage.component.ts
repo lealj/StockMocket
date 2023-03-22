@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoginSignUpService } from "./loginsignuppage.service"
+import { CookieServices } from "../cookie.service";
 
 @Component({
   selector: 'app-loginsignuppage',
@@ -8,32 +9,27 @@ import { LoginSignUpService } from "./loginsignuppage.service"
   styleUrls: ['./loginsignuppage.component.scss']
 })
 
-export class LoginsignuppageComponent implements OnInit 
+export class LoginsignuppageComponent implements OnInit
 {
-  
-  
   title = 'Stock Mock-et';
   usernameL = '';
   passwordL = '';
   usernameSU = '';
   passwordSU = '';
-
+  public response: any;
   //loginForm: FormGroup;
 
   constructor(private accountInfo: LoginSignUpService) { }
 
-  ngOnInit() 
+  ngOnInit()
   {
       usernameL: ''
       passwordL: ''
   }
 
   AttemptLogin() {
-   
-    //console.log("testprint1"); //this is a test print to make sure it is entering the function correctly
-
     //initialize the variables with "this." to store their values for this function
-    usernameL: this.usernameL; 
+    usernameL: this.usernameL;
     passwordL: this.passwordL;
 
     if(this.usernameL.length > 0 && this.passwordL.length > 0) //ensure they are a valid input (this.usernameL.length > 0 && this.passwordL.length > 0)
@@ -43,23 +39,24 @@ export class LoginsignuppageComponent implements OnInit
       console.log("Username: ", this.usernameL);
       console.log("Password: ", this.passwordL);
 
-      //this sends the username and password that is passed in to the service
-      this.accountInfo.AddOnLogin(this.usernameL, this.passwordL) 
-        .then(response => {
-          // Handle successful login
-          //console.log("successfully passed in username and password");
-
-          //this is currently not working with the backend since they always return an error and not a response value even when it passes
-          //the code actually works but its returning an error from the backend so it never enters this function (fix this next sprint if we need it)
-        })
-        .catch(error => {
-          // Handle login error
-          //console.log("username and password NOT passed to backend");
-          //this is currently not working with the backend since they always return an error and not a response value even when it passes
-          //the code actually works but its returning an error from the backend so it never enters this function (fix this next sprint if we need it)
-        });
-
-      //use this code to reset the values in the box back to blank and makes it empty 
+      // this sends the username and password that is passed in to the service which returns codes
+      // 200 - okay, 401 - unauthorized, 400 - bad request, 502 - bad gateway
+      this.accountInfo.AddOnLogin(this.usernameL, this.passwordL).then((response) => {
+        if (response.status === 200) {
+          console.log("Correct Credentials")
+        } else if(response.status === 401) {
+          console.log("Wrong Credentials")
+        }
+      }).catch((error) => {
+        if (error.error === null) {
+          console.log("Correct response, error body is just not empty")
+        }
+        else {
+          console.log(error);
+        }
+      }
+      );
+      //use this code to reset the values in the box back to blank and makes it empty
       //(if we get the above then catch part working, ideally I would only want to reset the values on an incorrect input and keep the values as we move onto the next page)
       this.usernameL = '';
       this.passwordL = '';
@@ -79,7 +76,7 @@ export class LoginsignuppageComponent implements OnInit
 
 
   AttemptSignUp() {
-   
+
     //console.log("testprint1"); //this is a test print to make sure it is entering the function correctly
 
     //initialize the variables with "this." to store their values for this function
@@ -102,8 +99,8 @@ export class LoginsignuppageComponent implements OnInit
           // Handle login error
           //console.log("username and password NOT passed to backend");
         });
-        
-        //use this code to reset the values in the box back to blank and makes it empty 
+
+        //use this code to reset the values in the box back to blank and makes it empty
         this.usernameSU = '';
         this.passwordSU = '';
     }
@@ -117,7 +114,5 @@ export class LoginsignuppageComponent implements OnInit
     }
 
   }
-
-
 }
 
