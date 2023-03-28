@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoginSignUpService } from "./loginsignuppage.service"
+import { Router } from '@angular/router';
 import { CookieServices } from "../cookie.service";
 
 @Component({
@@ -8,6 +9,8 @@ import { CookieServices } from "../cookie.service";
   templateUrl: './loginsignuppage.component.html',
   styleUrls: ['./loginsignuppage.component.scss']
 })
+
+
 
 export class LoginsignuppageComponent implements OnInit {
   title = 'Stock Mock-et';
@@ -18,8 +21,9 @@ export class LoginsignuppageComponent implements OnInit {
   public response: any;
 
   //loginForm: FormGroup;
+  
 
-  constructor(private accountInfo: LoginSignUpService) {
+  constructor(private accountInfo: LoginSignUpService, private Routing: Router) {
   }
 
   ngOnInit() {
@@ -42,9 +46,16 @@ export class LoginsignuppageComponent implements OnInit {
       // this sends the username and password that is passed in to the service which returns codes
       // 200 - okay, 401 - unauthorized, 400 - bad request, 502 - bad gateway
       this.accountInfo.AddOnLogin(this.usernameL, this.passwordL).then((response) => {
-        if (response.status === 200) {
+        if (response.status === 200) 
+        {
           console.log("Correct Credentials")
-        } else if (response.status === 401) {
+
+          //here is where we will route to the next page because we determine that the login attempt was successful (status of POST 200)!! 
+          this.Routing.navigate(['/charts']); //send it to the /charts that Freddy set up (which will be the main page)
+
+        } 
+        else if (response.status === 401) 
+        {
           console.log("Wrong Credentials")
         }
       }).catch((error) => {

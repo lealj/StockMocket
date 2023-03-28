@@ -11,9 +11,6 @@ import (
 // CURRENTLY NOT WORKING/TESTED; purpose is for this to (by itself or by being used by main) to create single .exe that runs
 // both the FE and BE
 
-// BELOW IS NOT ACTUALLY A COMMENT
-
-//go:embed backend/dist/*
 var assets embed.FS
 
 func GetFrontend() http.FileSystem {
