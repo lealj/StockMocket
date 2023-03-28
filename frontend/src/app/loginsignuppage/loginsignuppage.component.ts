@@ -9,22 +9,22 @@ import { CookieServices } from "../cookie.service";
   styleUrls: ['./loginsignuppage.component.scss']
 })
 
-export class LoginsignuppageComponent implements OnInit
-{
+export class LoginsignuppageComponent implements OnInit {
   title = 'Stock Mock-et';
   usernameL = '';
   passwordL = '';
   usernameSU = '';
   passwordSU = '';
   public response: any;
+
   //loginForm: FormGroup;
 
-  constructor(private accountInfo: LoginSignUpService) { }
+  constructor(private accountInfo: LoginSignUpService) {
+  }
 
-  ngOnInit()
-  {
-      usernameL: ''
-      passwordL: ''
+  ngOnInit() {
+    usernameL: ''
+    passwordL: ''
   }
 
   AttemptLogin() {
@@ -32,7 +32,7 @@ export class LoginsignuppageComponent implements OnInit
     usernameL: this.usernameL;
     passwordL: this.passwordL;
 
-    if(this.usernameL.length > 0 && this.passwordL.length > 0) //ensure they are a valid input (this.usernameL.length > 0 && this.passwordL.length > 0)
+    if (this.usernameL.length > 0 && this.passwordL.length > 0) //ensure they are a valid input (this.usernameL.length > 0 && this.passwordL.length > 0)
     {
       //print the info for the console log to see if the elements are being inputted correctly
       console.log("Login Information: ");
@@ -44,35 +44,31 @@ export class LoginsignuppageComponent implements OnInit
       this.accountInfo.AddOnLogin(this.usernameL, this.passwordL).then((response) => {
         if (response.status === 200) {
           console.log("Correct Credentials")
-        } else if(response.status === 401) {
+        } else if (response.status === 401) {
           console.log("Wrong Credentials")
         }
       }).catch((error) => {
-        if (error.error === null) {
-          console.log("Correct response, error body is just not empty")
+          if (error.error === null) {
+            console.log("Correct response, error body is just not empty")
+          } else {
+            console.log(error);
+          }
         }
-        else {
-          console.log(error);
-        }
-      }
       );
       //use this code to reset the values in the box back to blank and makes it empty
       //(if we get the above then catch part working, ideally I would only want to reset the values on an incorrect input and keep the values as we move onto the next page)
       this.usernameL = '';
       this.passwordL = '';
 
-    }
-    else if(this.usernameL.length == 0) //enter if the username field is blank
+    } else if (this.usernameL.length == 0) //enter if the username field is blank
     {
       console.log("Username field is blank. Inputs will not be sent to backend until fixed");
-    }
-    else if(this.passwordL.length == 0) //enter if the username field is blank
+    } else if (this.passwordL.length == 0) //enter if the username field is blank
     {
       console.log("Password field is blank. Inputs will not be sent to backend until fixed");
     }
 
   }
-
 
 
   AttemptSignUp() {
@@ -83,36 +79,29 @@ export class LoginsignuppageComponent implements OnInit
     usernameSU: this.usernameSU;
     passwordSU: this.passwordSU;
 
-    if(this.usernameSU.length > 0 && this.passwordSU.length > 0) //ensure they are a valid input (this.usernameL.length > 0 && this.passwordL.length > 0)
+    if (this.usernameSU.length > 0 && this.passwordSU.length > 0) //ensure they are a valid input (this.usernameL.length > 0 && this.passwordL.length > 0)
     {
       //print the info for the console log to see if the elements are being inputted correctly
       console.log("Sign Up Information: ");
       console.log("Username: ", this.usernameSU);
       console.log("Password: ", this.passwordSU);
 
-      this.accountInfo.AddOnSignUp(this.usernameSU, this.passwordSU)
-        .then(response => {
-          // Handle successful login
-          //console.log("successfully passed in username and password");
-        })
-        .catch(error => {
-          // Handle login error
-          //console.log("username and password NOT passed to backend");
-        });
-
-        //use this code to reset the values in the box back to blank and makes it empty
-        this.usernameSU = '';
-        this.passwordSU = '';
+      this.accountInfo.AddOnSignUp(this.usernameSU, this.passwordSU).then((response) => {
+        if (response.status === 200) {
+          console.log("The account username and password successfully created")
+        } else if (response.status === 401) {
+          console.log("Username is taken!")
+        }
+      }).catch((error) => {
+          if (error.error === null) {
+            console.log("Correct response, error body is just not empty")
+            console.log(error);
+          } else {
+            console.log(error);
+          }
+        }
+      );
     }
-    else if(this.usernameSU.length == 0) //enter if the username field is blank
-    {
-      console.log("Username field is blank. Inputs will not be sent to backend until fixed");
-    }
-    else if(this.passwordSU.length == 0) //enter if the username field is blank
-    {
-      console.log("Password field is blank. Inputs will not be sent to backend until fixed");
-    }
-
   }
 }
 

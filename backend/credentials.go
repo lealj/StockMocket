@@ -6,8 +6,6 @@ import (
 	"log"
 	"net/http"
 
-	"fmt"
-
 	_ "github.com/gorilla/mux"
 	"gorm.io/gorm"
 )
@@ -85,14 +83,17 @@ func signup(writer http.ResponseWriter, router *http.Request) {
 	// Getting users with same username that are already in the database
 	DB.Table("credentials").Select("username", "password").Where("username = ?", newCredentials.Username).Scan(&existingCredentials)
 	//check if new signup username already exists
-	if existingCredentials.Username == newCredentials.Username {
+	if existingCredentials.Username == newCredentials.Username || existingCredentials.Username != "" {
 		log.Println("Username already exists")
 		writer.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 	//create new user as username doesn't exist already
-	DB.Create(&newCredentials)
+	log.Printf(newCredentials.Username)
 
-	fmt.Fprint(writer, "Successfully saved username and password")
+	DB.Create(&newCredentials)
 	json.NewEncoder(writer).Encode(newCredentials)
+
+	writer.WriteHeader(http.StatusOK)
+	log.Printf("Successfully saved username and password")
 }
