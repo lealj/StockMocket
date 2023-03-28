@@ -54,27 +54,37 @@ export class LoginsignuppageComponent implements OnInit {
           this.Routing.navigate(['/charts']); //send it to the /charts that Freddy set up (which will be the main page)
 
         } 
+        /*
         else if (response.status === 401) 
         {
           console.log("Wrong Credentials")
         }
+        */
       }).catch((error) => {
           if (error.error === null) {
-            console.log("Correct response, error body is just not empty")
+            //console.log("Correct response, error body is just not empty")
+            //moving the above 401 checker to this section since it was entering here on a 401 status return since it is considered an error instead!!
+            console.log("Wrong Credentials")
+
+            //use this code to reset the values in the box back to blank and makes it empty on a failed attempt 
+           this.usernameL = '';
+           this.passwordL = '';
+
           } else {
             console.log(error);
           }
         }
       );
-      //use this code to reset the values in the box back to blank and makes it empty
-      //(if we get the above then catch part working, ideally I would only want to reset the values on an incorrect input and keep the values as we move onto the next page)
-      this.usernameL = '';
-      this.passwordL = '';
-
-    } else if (this.usernameL.length == 0) //enter if the username field is blank
+    } 
+    else if(this.usernameL.length == 0 && this.passwordL.length == 0) //enter if BOTH username and password fields are blank
+    {
+      console.log("Username and password fields are blank. Inputs will not be sent to backend until fixed");
+    }
+    else if (this.usernameL.length == 0) //enter if the username field is blank
     {
       console.log("Username field is blank. Inputs will not be sent to backend until fixed");
-    } else if (this.passwordL.length == 0) //enter if the username field is blank
+    } 
+    else if (this.passwordL.length == 0) //enter if the username field is blank
     {
       console.log("Password field is blank. Inputs will not be sent to backend until fixed");
     }
@@ -100,18 +110,39 @@ export class LoginsignuppageComponent implements OnInit {
       this.accountInfo.AddOnSignUp(this.usernameSU, this.passwordSU).then((response) => {
         if (response.status === 200) {
           console.log("The account username and password successfully created")
-        } else if (response.status === 401) {
+          
+          //added to make the input boxes blank after a sign up attempt with valid inputs 
+          this.usernameSU = '';
+          this.passwordSU = '';
+        } 
+        /*
+        else if (response.status === 401) {
           console.log("Username is taken!")
         }
+        */
       }).catch((error) => {
-          if (error.error === null) {
-            console.log("Correct response, error body is just not empty")
+          if (error.error === null) //moving the above 401 checker to this section since it was entering here on a 401 status return since it is considered an error instead!!
+          {
+            //console.log("Correct response, error body is just not empty")
+            console.log("Username is taken!")
             console.log(error);
           } else {
             console.log(error);
           }
         }
       );
+    }
+    else if(this.usernameSU.length == 0 && this.passwordSU.length == 0) //enter if BOTH username and password fields are blank
+    {
+      console.log("Username and password fields are blank. Inputs will not be sent to backend until fixed");
+    }
+    else if (this.usernameSU.length == 0) //enter if the username field is blank
+    {
+      console.log("Username field is blank. Inputs will not be sent to backend until fixed");
+    } 
+    else if (this.passwordSU.length == 0) //enter if the username field is blank
+    {
+      console.log("Password field is blank. Inputs will not be sent to backend until fixed");
     }
   }
 }
