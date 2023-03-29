@@ -97,3 +97,41 @@ func signup(writer http.ResponseWriter, router *http.Request) {
 	writer.WriteHeader(http.StatusOK)
 	log.Printf("Successfully saved username and password")
 }
+
+func deleteCredentials(writer http.ResponseWriter, router *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
+	// Get the username from the body to delete and checks to see body is correct
+	var credentialsToDelete Credentials
+	err := json.NewDecoder(router.Body).Decode(&credentialsToDelete)
+
+	if err != nil {
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Now we must check if the username is in the database
+	var existingCredentials Credentials
+	if err := DB.Table("credentials").Select("username", "password").Where("username = ?",
+		credentialsToDelete.Username).Scan(&existingCredentials); err != nil {
+
+	}
+
+	// If the username exists, we delete it and send a 200 code to suggest we deleted successfully. Else we return 409
+	if existingCredentials.Username == credentialsToDelete.Username || existingCredentials.Username != "" {
+		log.Println("Username to delete is in database")
+
+		if err := DB.Where("username = ?", credentialsToDelete.Username).Unscoped().Delete(&existingCredentials); err.Error != nil {
+			writer.WriteHeader(http.StatusBadRequest)
+			return
+		}
+
+		log.Println("Deleted in DB")
+		writer.WriteHeader(http.StatusOK)
+		return
+
+	} else {
+		writer.WriteHeader(http.StatusConflict)
+	}
+
+}
