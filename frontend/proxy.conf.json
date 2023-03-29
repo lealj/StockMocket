@@ -1,5 +1,15 @@
 {
-  "/credentials/*": {
+  "/credentials": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/userstock": {
+    "target": "http://localhost:8080",
+    "secure": false,
+    "changeOrigin": true
+  },
+  "/stocks": {
     "target": "http://localhost:8080",
     "secure": false,
     "changeOrigin": true
