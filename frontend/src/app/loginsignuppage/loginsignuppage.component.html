@@ -61,3 +61,39 @@
 
   <button (click)="AttemptSignUp()" formtarget="" data-cy="signUpSubmit"> Sign Up </button>
  
+
+
+
+
+
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+  <br>
+
+  
+  
+ 
+  
+  
+
+  <!-- Delete User Attempt -->
+  <h2>Delete User</h2>
+
+  <!-- added ngModel to link the username and password to their respective input boxes -->
+  <!-- added data-cy as per Cypress's recommendation -->
+  <input [(ngModel)]="usernameD" id="UsernameToDelete" placeholder="Enter a username to delete" type ="text" value = "" data-cy="loginToDelete"/>
+ 
+  <button (click)="DeleteUser()" formtarget="" data-cy="deleteSubmit"> Delete </button>
