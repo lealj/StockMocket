@@ -9,6 +9,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/piquette/finance-go/chart"
 	"github.com/piquette/finance-go/datetime"
+	"github.com/piquette/finance-go/quote"
 	"gorm.io/gorm"
 )
 
@@ -16,9 +17,8 @@ import (
 
 type Stock struct {
 	gorm.Model
-	Ticker string    `json:"ticker"`
-	Price  float64   `json:"price"`
-	Date   time.Time `json:"date"`
+	Ticker string  `json:"ticker"`
+	Price  float64 `json:"price"`
 }
 
 type Query struct {
@@ -47,33 +47,28 @@ func GetStock(writer http.ResponseWriter, rout *http.Request) {
 	json.NewEncoder(writer).Encode(stock)
 }
 
+// update stocks with today's price
 func UpdateStocks(writer http.ResponseWriter, rout *http.Request) {
-	/*
-		UpdateStockHelper("KO")
-		UpdateStockHelper("MSFT")
-		UpdateStockHelper("LMT")
-		UpdateStockHelper("AAPL")
-		UpdateStockHelper("WSF")
-	*/
-}
+	writer.Header().Set("Content-Type", "application/json")
+	// List of tickers in database
+	tickers := []string{"KO", "MSFT", "LMT", "AAPL", "WFC"}
 
-func UpdateStockHelper(tick string) {
-	/*
-		q, err := quote.Get(tick)
+	for _, ticker := range tickers {
+		q, err := quote.Get(ticker)
 		if err != nil {
 			fmt.Printf("Error getting quote: %v", err)
 			return
 		}
 
-		var stockToUpdate Stock
-		today := time.Now().Format("01-02-2006")
+		p := q.RegularMarketPrice
 
-		DB.Model(&Stock{}).UpdateColumns(map[string]interface{}{
-			"ticker": tick,
-			"date":   today,
-			"price":  q.RegularMarketPrice,
-		})
-	*/
+		fmt.Printf("%f, %s\n", p, ticker)
+
+		var stock Stock
+		DB.Where("ticker = ?", ticker).First(&stock)
+		stock.Price = p
+		DB.Save(&stock)
+	}
 }
 
 func QueryStocks(writer http.ResponseWriter, router *http.Request) {
