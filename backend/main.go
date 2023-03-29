@@ -25,7 +25,9 @@ func httpHandler() http.Handler {
 
 	// funcs regarding stock and market info
 	rout.HandleFunc("/stocks", GetStocks).Methods("GET")
-	rout.HandleFunc("/stocks/{tick}", GetStock).Methods("GET")
+	rout.HandleFunc("/stocks/{ticker}", GetStock).Methods("GET")
+	rout.HandleFunc("/updatestocks", UpdateStocks).Methods("GET")
+	rout.HandleFunc("/querystocks", QueryStocks).Methods("POST")
 
 	//must be last
 	rout.PathPrefix("/").Handler(AngularHandler).Methods("GET")
