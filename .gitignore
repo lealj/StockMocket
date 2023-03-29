@@ -39,7 +39,6 @@
 /backend/vendor
 /backend/dist/*
 /node_modules
-/backend/back.exe
 /backend/backend.exe
 # System files
 .DS_Store

@@ -17,6 +17,7 @@ func httpHandler() http.Handler {
 	// funcs regarding credentials & user info
 	rout.HandleFunc("/credentials/signup", signup).Methods("POST")
 	rout.HandleFunc("/credentials/login", login).Methods("POST")
+	rout.HandleFunc("/credentials/delete", deleteCredentials).Methods("POST")
 
 	// funcs regarding what user owns
 	rout.HandleFunc("/userstock/{username}", GetStocksOwned).Methods("GET")
