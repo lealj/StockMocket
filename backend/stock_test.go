@@ -91,3 +91,25 @@ func TestGetStock(t *testing.T) {
 		t.Errorf("Unexpected body returned. got %v; want body to contain: %v", body, expect)
 	}
 }
+
+func TestUpdateStocks(t *testing.T) {
+	mockDB := MockDB_Init()
+	defer func() {
+		dbInstance, _ := mockDB.DB()
+		_ = dbInstance.Close()
+	}()
+
+	//overwrite db variable in user.go
+	DB = mockDB
+}
+
+func TestQueryStocks(t *testing.T) {
+	mockDB := MockDB_Init()
+	defer func() {
+		dbInstance, _ := mockDB.DB()
+		_ = dbInstance.Close()
+	}()
+
+	//overwrite db variable in user.go
+	DB = mockDB
+}
