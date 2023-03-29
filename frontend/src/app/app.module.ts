@@ -24,6 +24,9 @@ import { BuySellButtonComponent } from './buy-sell-button/buy-sell-button.compon
     FormsModule,
     HttpClientModule
   ],
+  exports: [
+    BuySellButtonComponent,
+  ],
   providers: [],
   bootstrap: [AppComponent]
 })

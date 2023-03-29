@@ -1,13 +1,17 @@
 import { TestBed } from '@angular/core/testing';
-
-import { CookieService } from './cookie.service';
+import { HttpClientTestingModule } from '@angular/common/http/testing';
+import { CookieServices } from './cookie.service';
 
 describe('CookieService', () => {
-  let service: CookieService;
+  let service: CookieServices;
 
-  beforeEach(() => {
-    TestBed.configureTestingModule({});
-    service = TestBed.inject(CookieService);
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [CookieServices]
+    }).compileComponents();
+  
+    service = TestBed.inject(CookieServices);
   });
 
   it('should be created', () => {

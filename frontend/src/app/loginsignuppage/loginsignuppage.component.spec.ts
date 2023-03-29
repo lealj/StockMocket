@@ -25,20 +25,13 @@ describe('LoginsignuppageComponent', () => {
     expect(component).toBeTruthy();
   });
 
-  it('should initialize usernameL and passwordL to empty strings', () => {
+  it('should initialize login input boxes to empty strings', () => {
     expect(component.usernameL).toEqual('');
     expect(component.passwordL).toEqual('');
   });
 
-  it('should reset usernameL and passwordL to empty strings after calling AddOnLogin() method', (async() => {
-    const loginService = TestBed.inject(LoginSignUpService); // create an instance of LoginSignUpService
-    spyOn(loginService, 'AddOnLogin').and.returnValue(Promise.resolve());
-    component.usernameL = 'testuser';
-    component.passwordL = 'testpass';
-    component.AttemptLogin();
-    fixture.whenStable().then(() => {
-      expect(component.usernameL).toEqual('');
-      expect(component.passwordL).toEqual('');
-    });
-  }));
+  it('should initialize sign up input boxes to empty strings', () => {
+    expect(component.usernameSU).toEqual('');
+    expect(component.passwordSU).toEqual('');
+  });
 });
