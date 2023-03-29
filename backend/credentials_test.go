@@ -21,7 +21,6 @@ func TestLogin(t *testing.T) {
 	if err != nil {
 		t.Fatal(err)
 	}
-
 	login(writer, request)
 
 	if status := writer.Code; status != http.StatusOK {
@@ -34,7 +33,7 @@ func TestLoginFalse(t *testing.T) {
 
 	testLoginCreds := `{
 		"Username": "testFalse",
-		"Password": "testFalse" }`
+		"Password": "thisshouldfail" }`
 
 	request := httptest.NewRequest("POST", "/credentials/login", strings.NewReader(testLoginCreds))
 	request.Header.Set("Content-Type", "application/json")
@@ -55,11 +54,12 @@ func TestSignup(t *testing.T) {
 	InitialMigration()
 
 	testLoginCreds := `{
-		"Username": "testsignup3",
-		"Password": "testsignup3" }`
+		"Username": "newsignupfafvnjabncjaib",
+		"Password": "testsicaaccfngudsgsb3" }`
 
 	request := httptest.NewRequest("POST", "/credentials/signup", strings.NewReader(testLoginCreds))
 	request.Header.Set("Content-Type", "application/json")
+
 	writer := httptest.NewRecorder()
 
 	if err != nil {
@@ -77,8 +77,8 @@ func TestSignupFail(t *testing.T) {
 	InitialMigration()
 
 	testLoginCreds := `{
-		"Username": "testsignup3",
-		"Password": "testsignup3" }`
+		"Username": "test",
+		"Password": "test" }`
 
 	request := httptest.NewRequest("POST", "/credentials/signup", strings.NewReader(testLoginCreds))
 	request.Header.Set("Content-Type", "application/json")
@@ -90,7 +90,7 @@ func TestSignupFail(t *testing.T) {
 
 	signup(writer, request)
 
-	if status := writer.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	if status := writer.Code; status != http.StatusUnauthorized {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusUnauthorized)
 	}
 }
