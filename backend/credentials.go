@@ -6,16 +6,15 @@ import (
 	"log"
 	"net/http"
 
-	_ "github.com/gorilla/mux"
 	"gorm.io/gorm"
 )
 
 type Credentials struct {
 	gorm.Model
 
-	Username string `json:"username"`
-	Password string `json:"password"`
-	Funds    int    `json:"funds"`
+	Username string  `json:"username"`
+	Password string  `json:"password"`
+	Funds    float64 `json:"funds"`
 }
 
 func login(writer http.ResponseWriter, router *http.Request) {
