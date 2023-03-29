@@ -8,6 +8,7 @@ import { AppComponent } from './app.component';
 import { MychartComponent } from './mychart/mychart.component';
 import { LoginsignuppageComponent } from './loginsignuppage/loginsignuppage.component';
 import { HeaderComponent } from './header/header.component';
+import { BuySellButtonComponent } from './buy-sell-button/buy-sell-button.component';
 
 @NgModule({
   declarations: [
@@ -15,6 +16,7 @@ import { HeaderComponent } from './header/header.component';
     MychartComponent,
     LoginsignuppageComponent,
     HeaderComponent,
+    BuySellButtonComponent,
   ],
   imports: [
     BrowserModule,
