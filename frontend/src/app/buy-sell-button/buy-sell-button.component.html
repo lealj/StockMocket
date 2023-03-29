@@ -1,0 +1,15 @@
+<!--added the form target for cypress testing-->
+<button (click)="onBuyClick()" formtarget="" data-cy="buy_button">Buy</button>
+<button (click)="onSellClick()" formtarget="" data-cy="sell_button">Buy</button>
+
+<div *ngIf="showBuyInput">
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" name="quantity" [(ngModel)]="quantity">
+    <button (click)="Buy(quantity)">Confirm</button>
+</div>
+
+<div *ngIf="showSellInput">
+    <label for="quantity">Quantity:</label>
+    <input type="number" id="quantity" name="quantity" [(ngModel)]="quantity">
+    <button (click)="Sell(quantity)">Confirm</button>
+</div>

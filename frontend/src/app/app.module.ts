@@ -7,12 +7,16 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { MychartComponent } from './mychart/mychart.component';
 import { LoginsignuppageComponent } from './loginsignuppage/loginsignuppage.component';
+import { HeaderComponent } from './header/header.component';
+import { BuySellButtonComponent } from './buy-sell-button/buy-sell-button.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     MychartComponent,
     LoginsignuppageComponent,
+    HeaderComponent,
+    BuySellButtonComponent,
   ],
   imports: [
     BrowserModule,
