@@ -20,12 +20,18 @@
 ## credentials.go
 ### Types
 #### type Credentials
-- 
+- Like the rest of our databases, credentials uses gorm.Model and contains just username, password and funds.
 ### Functions
 #### login()
-- 
+- When login() is called, it verifies that the username and password combination exits in the database. If it does, then 
+it returns and http status code 200. If it does not, it will return code 401 for unauthorized
 #### signup()
-- 
+- This functions will create a new user account with a username and password. If the username is not take, it will return a 200 code. 
+If the username is taken, then the code will return a 401 for unauthorized.
+#### deleteCredentials()
+- This will check if the username give is in the database, if it is, it will delete and return a 200 code. If the username
+is not in the database, then the code returned is 409.
+
 
 ## stock.go
 ### Types
