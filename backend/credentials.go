@@ -113,7 +113,6 @@ func deleteCredentials(writer http.ResponseWriter, router *http.Request) {
 	var existingCredentials Credentials
 	if err := DB.Table("credentials").Select("username", "password").Where("username = ?",
 		credentialsToDelete.Username).Scan(&existingCredentials); err != nil {
-
 	}
 
 	// If the username exists, we delete it and send a 200 code to suggest we deleted successfully. Else we return 409
