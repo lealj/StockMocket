@@ -4,8 +4,8 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"time"
 
-	"github.com/gorilla/mux"
 	"gorm.io/gorm"
 )
 
@@ -32,13 +32,12 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
 	// Get username (from /userstock/{username} in post request header)
-	params := mux.Vars(router)
-	username := params["username"]
 
 	// Get order info from post and assign username (we could just send the username in the body of the post request)
 	var newPurchaseOrder UserStocks
 	json.NewDecoder(router.Body).Decode(&newPurchaseOrder)
-	newPurchaseOrder.Username = username
+
+	fmt.Printf("Username: %s", newPurchaseOrder.Username)
 
 	// Get credentials using username (may want to alter so that we don't get password here (bad practice potentially))
 	var credentials Credentials
@@ -50,7 +49,7 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	// Get funds
 	funds := credentials.Funds
 
-	fmt.Printf("Funds for user %s: $%f\n", newPurchaseOrder.Username, funds)
+	//fmt.Printf("Funds for user %s: $%f\n", newPurchaseOrder.Username, funds)
 
 	// Get the stock data from Stocks (using ticker)
 	var stock Stock
@@ -89,21 +88,27 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 
 	// Update funds
 	credentials.Funds = credentials.Funds - totalOrderCost
-	fmt.Printf("New funds for %s: $%f\n", username, credentials.Funds)
+	// added this time to prevent error when test file used
+	t := time.Now()
+	t_f := t.Format("2006-01-02 15:04:05")
+	createdAt, err := time.Parse("2006-01-02 15:04:05", t_f)
+	if err != nil {
+		fmt.Printf("error parsing time: %v", err)
+	}
+	credentials.CreatedAt = createdAt
+
+	//fmt.Printf("New funds for %s: $%f\n", newPurchaseOrder.Username, credentials.Funds)
 	DB.Save(&credentials)
+
+	json.NewEncoder(writer).Encode(stocksOwned)
 }
 
 func SellStock(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
-	// Get username
-	params := mux.Vars(router)
-	username := params["username"]
-
 	// Get json data for struct
 	var newSellOrder UserStocks
 	json.NewDecoder(router.Body).Decode(&newSellOrder)
-	newSellOrder.Username = username
 
 	// Get credentials using username (may want to alter so that we don't get password here (bad practice potentially))
 	var credentials Credentials
@@ -164,13 +169,15 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 			stocksOwned.Shares, stocksOwned.Ticker, credentials.Funds)
 	}
 
+	json.NewEncoder(writer).Encode(stocksOwned)
 }
 
 func GetStocksOwned(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(router)
+	var userstock UserStocks
+	json.NewDecoder(router.Body).Decode(&userstock)
 	var user_stocks []UserStocks
-	DB.Where("username = ?", params["username"]).Find(&user_stocks)
+	DB.Where("username = ?", userstock.Username).Find(&user_stocks)
 	// this can be returned in a better format, or it can be parsed in front end.
 	json.NewEncoder(writer).Encode(user_stocks)
 }

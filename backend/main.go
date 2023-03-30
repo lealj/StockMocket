@@ -20,13 +20,16 @@ func httpHandler() http.Handler {
 	rout.HandleFunc("/credentials/delete", deleteCredentials).Methods("POST")
 
 	// funcs regarding what user owns
-	rout.HandleFunc("/userstock/{username}", GetStocksOwned).Methods("GET")
+	rout.HandleFunc("/userstock/{username}", GetStocksOwned).Methods("POST")
 	rout.HandleFunc("/userstock/buy/{username}", PurchaseStock).Methods("POST")
 	rout.HandleFunc("/userstock/sell/{username}", SellStock).Methods("POST")
 
 	// funcs regarding stock and market info
 	rout.HandleFunc("/stocks", GetStocks).Methods("GET")
+
+	//issues here
 	rout.HandleFunc("/stocks/{ticker}", GetStock).Methods("GET")
+
 	rout.HandleFunc("/updatestocks", UpdateStocks).Methods("GET")
 	rout.HandleFunc("/querystocks", QueryStocks).Methods("POST")
 

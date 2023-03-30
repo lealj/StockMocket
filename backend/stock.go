@@ -6,7 +6,6 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/gorilla/mux"
 	"github.com/piquette/finance-go/chart"
 	"github.com/piquette/finance-go/datetime"
 	"github.com/piquette/finance-go/quote"
@@ -31,6 +30,13 @@ type Query struct {
 	EndYear    int    `json:"end_year"`
 }
 
+/*
+func CreateDefaultStocks(writer http.ResponseWriter, rout *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
+}
+*/
+
 func GetStocks(writer http.ResponseWriter, rout *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	var stocks []Stock
@@ -40,10 +46,9 @@ func GetStocks(writer http.ResponseWriter, rout *http.Request) {
 
 func GetStock(writer http.ResponseWriter, rout *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
-	params := mux.Vars(rout)
-	var stock []Stock
-
-	DB.Where("ticker = ?", params["ticker"]).First(&stock)
+	var stock Stock
+	json.NewDecoder(rout.Body).Decode(&stock)
+	DB.Where("ticker = ?", stock.Ticker).Find(&stock)
 	json.NewEncoder(writer).Encode(stock)
 }
 
@@ -52,6 +57,9 @@ func UpdateStocks(writer http.ResponseWriter, rout *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	// List of tickers in database
 	tickers := []string{"KO", "MSFT", "LMT", "AAPL", "WFC"}
+
+	// to return json data
+	var updatedStocks []Stock
 
 	for _, ticker := range tickers {
 		q, err := quote.Get(ticker)
@@ -67,8 +75,20 @@ func UpdateStocks(writer http.ResponseWriter, rout *http.Request) {
 		var stock Stock
 		DB.Where("ticker = ?", ticker).First(&stock)
 		stock.Price = p
+
+		// createdat var created due to error using mock_db. Should only apply if createdat = 0000/null
+		t := time.Now()
+		t_f := t.Format("2006-01-02 15:04:05")
+		createdAt, err := time.Parse("2006-01-02 15:04:05", t_f)
+		if err != nil {
+			fmt.Printf("error parsing time: %v", err)
+		}
+		stock.CreatedAt = createdAt
 		DB.Save(&stock)
+
+		updatedStocks = append(updatedStocks, stock)
 	}
+	json.NewEncoder(writer).Encode(updatedStocks)
 }
 
 func QueryStocks(writer http.ResponseWriter, router *http.Request) {
