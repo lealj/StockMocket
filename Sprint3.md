@@ -38,7 +38,7 @@ Component test for buy and sell button: shows input box when buy button is press
     - tests the retrieval of real-time stock data pertaining to a ticker. 
 ### userstocks_test.go
 - ### TestPurchaseStock()
-    - tests the funcionality of a user purchasing stock. 
+    - tests the functionality of a user purchasing stock. 
 - ### TestSellStock()
     - tests the functionality of a user selling stock. 
 - ### TestGetStocksOwned()
@@ -52,6 +52,10 @@ Component test for buy and sell button: shows input box when buy button is press
     - tests the success of a user attempting to sign up. 
 - ### TestSignupFail()
     - tests if the signup failed. 
+- ### TestDeleteCredentials()
+    - Tests the deleteCredentials by requesting to delete a newly created account within delete. If signup passes, then there should be no issue.
+- ### TestDeleteCredentialsFail()
+    - tests deleteCredentials and expects a failed status since the test tries to delete an account with random typed letters, it should not be in the database.
 
 # Back-end API Documentation
 ## main.go
