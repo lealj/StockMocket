@@ -4,7 +4,7 @@
     
     
     //test the delete button on a username that does NOT exist in the DB already
-     cy.visit('localhost:4200');
+     cy.visit('localhost:4200/account');
      cy.get('[data-cy="loginToDelete"]').type('bananas') //this should find just the "Enter a username to delete" box
      cy.get('button').contains('Delete').click() //this presses the button
      //should return 409 bc the username is NOT found in the DB so it should fail
@@ -12,7 +12,7 @@
 
     
     //enters a username and password to login that does NOT exists in the DB so should fail
-    cy.visit('localhost:4200') //visits the local host where the login page info is located
+    cy.visit('localhost:4200/account') //visits the local host where the login page info is located
     cy.get('[data-cy="loginUNBox"]').type('asdfghkj') //this should find just the "Enter your username" box
     cy.get('[data-cy="loginPWBox"]').type('tesasdflkasdhgtFail') //this should find just the "Enter your password" box
     cy.get('button').contains('Log In').click() //this presses the button
@@ -23,7 +23,7 @@
 
 
     //enters a username that exists and password to login that does NOT exists in the DB so should fail
-    cy.visit('localhost:4200') //visits the local host where the login page info is located
+    cy.visit('localhost:4200/account') //visits the local host where the login page info is located
     cy.get('[data-cy="loginUNBox"]').type('test') //this should find just the "Enter your username" box
     cy.get('[data-cy="loginPWBox"]').type('tesasdflkasdhgtFail') //this should find just the "Enter your password" box
     cy.get('button').contains('Log In').click() //this presses the button
@@ -32,7 +32,7 @@
 
 
     //enters a username and password to signup that already exists in the DB so should fail
-    cy.visit('localhost:4200') //visits the local host where the login page info is located
+    cy.visit('localhost:4200/account') //visits the local host where the login page info is located
     //following the cypress-recommended method of finding the components
     cy.get('[data-cy="signUpUNBox"]').type('test') //this should find just the "Enter a username" box
     cy.get('[data-cy="signUpPWBox"]').type('test') //this should find just the "Enter a password" box
@@ -44,7 +44,7 @@
 
 
     //enters a username and password to login that exists in the DB so should succeed
-    cy.visit('localhost:4200') //visits the local host where the login page info is located
+    cy.visit('localhost:4200/account') //visits the local host where the login page info is located
     //following the cypress-recommended method of finding the components
     cy.get('[data-cy="loginUNBox"]').type('test') //this should find just the "Enter your username" box
     cy.get('[data-cy="loginPWBox"]').type('test') //this should find just the "Enter your password" box
@@ -57,7 +57,7 @@
     /* ===== the following 2 e2e tests are used together to test one specific function of the code!! ===== */
 
     //enter a username and password to sign up that does NOT already exist in the DB so it should add it
-    cy.visit('localhost:4200') //visits the local host where the login page info is located
+    cy.visit('localhost:4200/account') //visits the local host where the login page info is located
     //following the cypress-recommended method of finding the components
     cy.get('[data-cy="signUpUNBox"]').type('testSignUpUN') //this should find just the "Enter a username" box
     cy.get('[data-cy="signUpPWBox"]').type('testSignUpPW') //this should find just the "Enter a password" box
@@ -66,7 +66,7 @@
 
     
     //enter a username and password to sign up that does already exist in the DB (already added from above test)
-    cy.visit('localhost:4200') //visits the local host where the login page info is located
+    cy.visit('localhost:4200/account') //visits the local host where the login page info is located
     //following the cypress-recommended method of finding the components
     cy.get('[data-cy="signUpUNBox"]').type('testSignUpUN') //this should find just the "Enter a username" box
     cy.get('[data-cy="signUpPWBox"]').type('testSignUpPW') //this should find just the "Enter a password" box
@@ -77,7 +77,7 @@
 
 
     //test the delete button
-    cy.visit('localhost:4200');
+    cy.visit('localhost:4200/account');
     cy.get('[data-cy="loginToDelete"]').type('testSignUpUN') //this should find just the "Enter a username to delete" box
     cy.get('button').contains('Delete').click() //this presses the button
     //should return 200 since the username is found in DB and successfully removed!
