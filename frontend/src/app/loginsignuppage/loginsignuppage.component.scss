@@ -7,6 +7,7 @@
     -moz-osx-font-smoothing: grayscale;
   }
 
+
   h1,
   h2,
   h3,
@@ -290,3 +291,35 @@
       visibility: hidden;
     }
   }
+
+  //added to give a bit of spacing between the input boxes
+  input {
+    margin: .1rem;
+  }
+
+  //more spacing between the buttons and the text box so it looks nicer
+  button {
+    margin: 0.5rem;
+  }
+
+  //make the button highlight red when hovering over it as a last warning that if you go through with it, all the progress on the account will be lost!!
+  .deleteButton:hover 
+  {
+    background-color: red;
+    color: white;
+  }
+
+  //added this to make the delete user text appear in red with a shadow to make it more intimidating (hopefully to deter someone from accidentally doing it or regret doing it)
+  h2.deleteHeader
+  {
+    color: red;
+    text-shadow: 0.5px 0.5px 0.5px black;
+  }
+
+  p
+  {
+    //margin-bottom: 10px;
+    color: red;
+  }
+
+

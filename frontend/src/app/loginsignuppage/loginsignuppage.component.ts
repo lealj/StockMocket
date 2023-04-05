@@ -20,6 +20,9 @@ export class LoginsignuppageComponent implements OnInit
   usernameSU = '';
   passwordSU = '';
   usernameD = '';
+  loginMessageToPrint = '';
+  signUpMessageToPrint = '';
+  deleteMessageToPrint = '';
   public response: any;
 
   //loginForm: FormGroup;
@@ -51,7 +54,7 @@ export class LoginsignuppageComponent implements OnInit
         if (response.status === 200) 
         {
           console.log("Correct Credentials")
-
+          this.loginMessageToPrint = '';
           //here is where we will route to the next page because we determine that the login attempt was successful (status of POST 200)!! 
           this.Routing.navigate(['/charts']); //send it to the /charts that Freddy set up (which will be the main page)
 
@@ -67,10 +70,11 @@ export class LoginsignuppageComponent implements OnInit
             //console.log("Correct response, error body is just not empty")
             //moving the above 401 checker to this section since it was entering here on a 401 status return since it is considered an error instead!!
             console.log("Wrong Credentials")
+            this.loginMessageToPrint = 'Username or password was incorrect';
 
             //use this code to reset the values in the box back to blank and makes it empty on a failed attempt 
-           this.usernameL = '';
-           this.passwordL = '';
+            this.usernameL = '';
+            this.passwordL = '';
 
           } else {
             console.log(error);
@@ -81,14 +85,17 @@ export class LoginsignuppageComponent implements OnInit
     else if(this.usernameL.length == 0 && this.passwordL.length == 0) //enter if BOTH username and password fields are blank
     {
       console.log("Username and password fields are blank. Inputs will not be sent to backend until fixed");
+      this.loginMessageToPrint = 'Enter a username and password!';
     }
     else if (this.usernameL.length == 0) //enter if the username field is blank
     {
       console.log("Username field is blank. Inputs will not be sent to backend until fixed");
+      this.loginMessageToPrint = 'Enter a username!';
     } 
     else if (this.passwordL.length == 0) //enter if the username field is blank
     {
       console.log("Password field is blank. Inputs will not be sent to backend until fixed");
+      this.loginMessageToPrint = 'Enter a password!';
     }
 
   }
@@ -112,7 +119,8 @@ export class LoginsignuppageComponent implements OnInit
       this.accountInfo.AddOnSignUp(this.usernameSU, this.passwordSU).then((response) => {
         if (response.status === 200) {
           console.log("The account username and password successfully created")
-          
+          this.signUpMessageToPrint = 'Account successfully created!';
+
           //added to make the input boxes blank after a sign up attempt with valid inputs 
           this.usernameSU = '';
           this.passwordSU = '';
@@ -127,6 +135,7 @@ export class LoginsignuppageComponent implements OnInit
           {
             //console.log("Correct response, error body is just not empty")
             console.log("Username is taken!")
+            this.signUpMessageToPrint = 'Username is taken. Please try again!';
             console.log(error);
           } else {
             console.log(error);
@@ -137,14 +146,17 @@ export class LoginsignuppageComponent implements OnInit
     else if(this.usernameSU.length == 0 && this.passwordSU.length == 0) //enter if BOTH username and password fields are blank
     {
       console.log("Username and password fields are blank. Inputs will not be sent to backend until fixed");
+      this.signUpMessageToPrint = 'Enter a username and password!';
     }
     else if (this.usernameSU.length == 0) //enter if the username field is blank
     {
       console.log("Username field is blank. Inputs will not be sent to backend until fixed");
+      this.signUpMessageToPrint = 'Enter a username!';
     } 
     else if (this.passwordSU.length == 0) //enter if the username field is blank
     {
       console.log("Password field is blank. Inputs will not be sent to backend until fixed");
+      this.signUpMessageToPrint = 'Enter a password!';
     }
   }
 
@@ -161,7 +173,7 @@ export class LoginsignuppageComponent implements OnInit
       this.accountInfo.DeleteUNandPW(this.usernameD).then((response) => {
         if (response.status === 200) {
           console.log("The account username and password successfully created")
-          
+          this.deleteMessageToPrint = "Deletion Successful!";
           //added to make the input boxes blank after a delete attempt with valid input 
           this.usernameD = '';
         } 
@@ -170,6 +182,7 @@ export class LoginsignuppageComponent implements OnInit
           {
             //console.log("Correct response, error body is just not empty")
             console.log("No username found...Deletion failed")
+            this.deleteMessageToPrint = "Deletion failed: Username was not found in the database!";
             console.log(error);
           } else {
             console.log(error);
@@ -180,6 +193,7 @@ export class LoginsignuppageComponent implements OnInit
     else if (this.usernameD.length == 0) //enter if the username field is blank
     {
       console.log("Username field is blank. Input will not be sent to backend until fixed");
+      this.deleteMessageToPrint = "Please enter a username!";
     } 
   }
 

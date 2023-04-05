@@ -30,6 +30,8 @@
   <input [(ngModel)]="usernameL" id="loginUsername" placeholder="Enter your username" type ="text" value = "" data-cy="loginUNBox"/>
   <input [(ngModel)]="passwordL" id="loginPassword" placeholder="Enter your password" type ="text" value = "" data-cy="loginPWBox" />
  
+  <p> {{ loginMessageToPrint }} </p>
+
   <button (click)="AttemptLogin()" formtarget="" data-cy="loginSubmit"> Log In </button>
 
   <!-- this prints out the inputs after each button click -->
@@ -58,6 +60,8 @@
   <!-- added data-cy as per Cypress's recommendation -->
   <input [(ngModel)]="usernameSU" id="signUpUsername" placeholder="Enter a username" type ="text" value = "" data-cy="signUpUNBox" />
   <input [(ngModel)]="passwordSU" id="signUpPassword" placeholder="Enter a password" type ="text" value = "" data-cy="signUpPWBox"/>
+
+  <p> {{ signUpMessageToPrint }} </p>
 
   <button (click)="AttemptSignUp()" formtarget="" data-cy="signUpSubmit"> Sign Up </button>
  
@@ -90,10 +94,12 @@
   
 
   <!-- Delete User Attempt -->
-  <h2>Delete User</h2>
-
+  <h2 class="deleteHeader">Delete User</h2>
+  <p style="color:red; margin-bottom: 10px;">WARNING: This can't be undone!!</p>
   <!-- added ngModel to link the username and password to their respective input boxes -->
   <!-- added data-cy as per Cypress's recommendation -->
   <input [(ngModel)]="usernameD" id="UsernameToDelete" placeholder="Enter a username to delete" type ="text" value = "" data-cy="loginToDelete"/>
  
-  <button (click)="DeleteUser()" formtarget="" data-cy="deleteSubmit"> Delete </button>
+  <p> {{ deleteMessageToPrint }} </p>
+
+  <button (click)="DeleteUser()" class="button deleteButton" formtarget="" data-cy="deleteSubmit"> Delete </button>
