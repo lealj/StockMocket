@@ -20,7 +20,7 @@ export class LoginSignUpService {
   AddOnSignUp(username: string, password: string): Promise<any>
   {
     const acctInfo = { username: username, password: password };
-    return this.client.post("/credentials/signup", acctInfo, {observe: 'response'}).toPromise();
+    return this.client.post("/credentials/signup", acctInfo, {withCredentials: true, observe: 'response'}).toPromise();
   }
 
   DeleteUNandPW(username: string): Promise<any>
@@ -28,4 +28,10 @@ export class LoginSignUpService {
     const acctInfo = { username: username };
     return this.client.post("/credentials/delete", acctInfo, {observe: 'response'}).toPromise();
   }
+
+  checkAuth(): Promise<any> {
+    return this.client.get('/credentials/checkAuth', {withCredentials: true, observe: 'response'}).toPromise();
+  }
+
+
 }

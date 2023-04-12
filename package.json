@@ -3,12 +3,13 @@
     "ng": "ng",
     "start": "concurrently \"npm run dev:front\" \"npm run dev:back\"",
     "dev:front": "cd frontend && ng serve",
-    "dev:back": "cd backend && go build && back.exe"
+    "dev:back": "cd backend && go build && backend.exe"
   },
   "devDependencies": {
     "concurrently": "^7.6.0"
   },
   "dependencies": {
+    "@auth0/angular-jwt": "^5.1.2",
     "ngx-cookie-service": "^15.0.0"
   }
 }

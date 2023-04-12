@@ -2,6 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import {JwtModule} from '@auth0/angular-jwt';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -12,6 +13,10 @@ import { BuySellButtonComponent } from './buy-sell-button/buy-sell-button.compon
 import { HomeComponent } from './home/home.component';
 import { PortfolioPageComponent } from './portfolio-page/portfolio-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
+
+export function tokenGetter() {
+  return localStorage.getItem('token');
+}
 
 @NgModule({
   declarations: [
@@ -28,7 +33,12 @@ import { AboutPageComponent } from './about-page/about-page.component';
     BrowserModule,
     AppRoutingModule,
     FormsModule,
-    HttpClientModule
+    HttpClientModule,
+    JwtModule.forRoot({
+      config: {
+        tokenGetter: tokenGetter
+      },
+    }),
   ],
   exports: [
     BuySellButtonComponent,
