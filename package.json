@@ -9,7 +9,6 @@
     "concurrently": "^7.6.0"
   },
   "dependencies": {
-    "@auth0/angular-jwt": "^5.1.2",
     "ngx-cookie-service": "^15.0.0"
   }
 }
