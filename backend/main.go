@@ -15,13 +15,15 @@ func httpHandler() http.Handler {
 	/* API REQUESTS */
 
 	// funcs regarding credentials & user info
-	secure := rout.PathPrefix("/credentials/secure").Subrouter()
-	secure.Use(AuthenticateMiddleware)
-	secure.HandleFunc("/credentials/checkAuth", checkAuth).Methods("GET")
+	secure := rout.PathPrefix("/credentials").Subrouter()
+	secure.Use(authenticateToken)
+
+	rout.HandleFunc("/credentials/authorize", verifyToken).Methods("GET")
 
 	rout.HandleFunc("/credentials/signup", signup).Methods("POST")
-	secure.HandleFunc("/credentials/login", login).Methods("POST")
+	rout.HandleFunc("/credentials/login", login).Methods("POST")
 	rout.HandleFunc("/credentials/delete", deleteCredentials).Methods("POST")
+	rout.HandleFunc("/credentials/logout", logout).Methods("GET")
 
 	// funcs regarding what user owns
 	rout.HandleFunc("/userstock/{username}", GetStocksOwned).Methods("POST")

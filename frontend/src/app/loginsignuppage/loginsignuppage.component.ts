@@ -34,24 +34,12 @@ export class LoginsignuppageComponent implements OnInit
   }
 
   checkAuthorization() {
-    this.accountInfo.checkAuth().then((response) => {
-      if (response.status === 200) {
+    this.accountInfo.verify().then((isLoggedIn) => {
+      if (isLoggedIn) {
         this.Routing.navigate(['/charts']);
-      } else {
-
       }
-    }).catch((error) => {
-      if (error.error === null) {
-        //console.log("Correct response, error body is just not empty")
-        //moving the above 401 checker to this section since it was entering here on a 401 status return since it is considered an error instead!!
-        console.log("You have beend logged out")
-
-        //use this code to reset the values in the box back to blank and makes it empty on a failed attempt
-        this.usernameL = '';
-        this.passwordL = '';
-
-      } else {
-        console.log(error);
+      else {
+        this.Routing.navigate(['/account']);
       }
     });
   }
@@ -125,7 +113,6 @@ export class LoginsignuppageComponent implements OnInit
 
   }
 
-
   AttemptSignUp() {
 
     //console.log("testprint1"); //this is a test print to make sure it is entering the function correctly
@@ -184,7 +171,6 @@ export class LoginsignuppageComponent implements OnInit
       this.signUpMessageToPrint = 'Enter a password!';
     }
   }
-
 
   DeleteUser() //added to delete username-password combo from database
   {
