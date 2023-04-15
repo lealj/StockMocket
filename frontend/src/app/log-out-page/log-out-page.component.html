@@ -1,0 +1,41 @@
+<div class="content" role="main">
+
+    <!-- Highlight Card -->
+    <div class="card highlight-card card-large">
+
+      <span>Log out or Delete Your {{ title }} Account!</span>
+
+    </div>
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <h2>Log Out</h2>
+    <button (click)="AttemptLogOut()" class="button logOutButton" formtarget="" data-cy="logoutSubmit"> Log Out </button>
+    <p> {{ logOutMessageToPrint }} </p>
+
+
+
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+
+
+    <!-- Delete User Attempt -->
+    <h2 class="deleteHeader">Delete User</h2>
+    <p style="color:red; margin-bottom: 10px;">WARNING: This can't be undone!!</p>
+    <!-- added ngModel to link the username and password to their respective input boxes -->
+    <!-- added data-cy as per Cypress's recommendation -->
+    <input [(ngModel)]="usernameD" id="UsernameToDelete" placeholder="Enter a username to delete" type ="text" value = "" data-cy="loginToDelete"/>
+
+    <p> {{ deleteMessageToPrint }} </p>
+
+    <button (click)="DeleteUser()" class="button deleteButton" formtarget="" data-cy="deleteSubmit"> Delete </button>

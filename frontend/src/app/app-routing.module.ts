@@ -5,6 +5,7 @@ import { MychartComponent } from './mychart/mychart.component';
 import { HomeComponent } from './home/home.component';
 import { PortfolioPageComponent } from './portfolio-page/portfolio-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
+import { LogOutPageComponent } from './log-out-page/log-out-page.component';
 
 const routes: Routes = [
   {
@@ -26,6 +27,10 @@ const routes: Routes = [
   {
     path: 'about',
     component: AboutPageComponent
+  },
+  {
+    path: 'logout',
+    component: LogOutPageComponent
   }
 ];
 

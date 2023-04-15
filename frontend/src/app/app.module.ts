@@ -13,6 +13,7 @@ import { BuySellButtonComponent } from './buy-sell-button/buy-sell-button.compon
 import { HomeComponent } from './home/home.component';
 import { PortfolioPageComponent } from './portfolio-page/portfolio-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
+import { LogOutPageComponent } from './log-out-page/log-out-page.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -28,6 +29,7 @@ export function tokenGetter() {
     HomeComponent,
     PortfolioPageComponent,
     AboutPageComponent,
+    LogOutPageComponent,
   ],
   imports: [
     BrowserModule,

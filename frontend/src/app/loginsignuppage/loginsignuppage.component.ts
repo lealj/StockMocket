@@ -23,7 +23,6 @@ export class LoginsignuppageComponent implements OnInit
   usernameD = '';
   loginMessageToPrint = '';
   signUpMessageToPrint = '';
-  deleteMessageToPrint = '';
   public response: any;
 
   //loginForm: FormGroup;
@@ -36,7 +35,7 @@ export class LoginsignuppageComponent implements OnInit
   checkAuthorization() {
     this.accountInfo.verify().then((isLoggedIn) => {
       if (isLoggedIn) {
-        this.Routing.navigate(['/charts']);
+        this.Routing.navigate(['/logout']);
       }
       else {
         this.Routing.navigate(['/account']);
@@ -172,40 +171,5 @@ export class LoginsignuppageComponent implements OnInit
     }
   }
 
-  DeleteUser() //added to delete username-password combo from database
-  {
-    usernameD: this.usernameD;
-
-    if (this.usernameD.length > 0)
-    {
-      console.log("Deletion Information: ");
-      console.log(this.usernameD);
-
-      this.accountInfo.DeleteUNandPW(this.usernameD).then((response) => {
-        if (response.status === 200) {
-          console.log("The account username and password successfully created")
-          this.deleteMessageToPrint = "Deletion Successful!";
-          //added to make the input boxes blank after a delete attempt with valid input
-          this.usernameD = '';
-        }
-      }).catch((error) => {
-          if (error.error === null)
-          {
-            //console.log("Correct response, error body is just not empty")
-            console.log("No username found...Deletion failed")
-            this.deleteMessageToPrint = "Deletion failed: Username was not found in the database!";
-            console.log(error);
-          } else {
-            console.log(error);
-          }
-        }
-      );
-    }
-    else if (this.usernameD.length == 0) //enter if the username field is blank
-    {
-      console.log("Username field is blank. Input will not be sent to backend until fixed");
-      this.deleteMessageToPrint = "Please enter a username!";
-    }
-  }
 
 }
