@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ShareService } from '../share.service';
+import { error } from 'cypress/types/jquery';
 
 @Component({
   selector: 'app-buy-sell-button',
@@ -16,7 +17,11 @@ export class BuySellButtonComponent implements OnInit {
 
   constructor(private shareAction: ShareService){}
   ngOnInit(): void {
-   
+   this.shareAction.getUser().then((username: string) => {
+    this.username = username;
+   }).catch((error) => {
+    console.error(error);
+   });
   }
 
   onBuyClick(): void {
@@ -25,8 +30,7 @@ export class BuySellButtonComponent implements OnInit {
     this.showSellInput = false;
   }
 
-  Buy(quantity: number){
-    username: this.username;
+  Buy(quantity: number){ //generalize to all tickers
     this.shareAction.Buy(this.username, "msft", quantity);
     this.showBuyInput = false; //hides input box after confirming order
   }
@@ -35,8 +39,7 @@ export class BuySellButtonComponent implements OnInit {
     this.showSellInput = true;
     this.showBuyInput = false;
   }
-  Sell(quantity: number){
-    username: this.username;
+  Sell(quantity: number){ //generalize to all tickers
     this.shareAction.Sell(this.username, "msft", quantity);
     this.showSellInput = false; 
   }
