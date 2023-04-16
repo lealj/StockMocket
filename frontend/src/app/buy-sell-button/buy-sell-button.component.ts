@@ -33,7 +33,7 @@ export class BuySellButtonComponent implements OnInit {
   async Buy(quantity: number){ //generalize to all tickers
     const userData = await this.loginSignUpService.claimData();
     this.username = userData.username;
-    this.shareAction.Buy(this.username, "msft", quantity);
+    this.shareAction.Buy(this.username, "MSFT", quantity);
     this.showBuyInput = false; //hides input box after confirming order
   }
 
@@ -44,7 +44,7 @@ export class BuySellButtonComponent implements OnInit {
   async Sell(quantity: number){ //generalize to all tickers
     const userData = await this.loginSignUpService.claimData();
     this.username = userData.username;
-    this.shareAction.Sell(this.username, "msft", quantity);
+    this.shareAction.Sell(this.username, "MSFT", quantity);
     this.showSellInput = false; 
   }
 
