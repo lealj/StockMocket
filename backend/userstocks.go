@@ -20,6 +20,13 @@ type UserStocks struct {
 	// so 1 share bought at $50, another share bought at $75 -> $125 total. Future share worth $100. So profit = 100x2 - (50+75) = 200-125=$75
 }
 
+/*
+Http status meanings in this function:
+400 - Username not found
+401 - Ticker not found
+402 - Share quantity is not in range 1-50
+403 - Not enough funds for the purchase
+*/
 func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
@@ -47,7 +54,7 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	var stock Stock
 	if err := DB.Where("ticker = ?", newPurchaseOrder.Ticker).First(&stock).Error; err != nil {
 		fmt.Printf("Error finding ticker\n")
-		writer.WriteHeader(http.StatusBadRequest)
+		writer.WriteHeader(http.StatusUnauthorized)
 		return
 	}
 	// Get price of stock and quantity wanted
@@ -57,7 +64,7 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	// Base restriction on share purchase amount
 	if sharesInOrder > 50 || sharesInOrder <= 0 {
 		fmt.Printf("Invalid input for shares\n")
-		writer.WriteHeader(http.StatusBadRequest)
+		writer.WriteHeader(http.StatusPaymentRequired)
 		return
 	}
 
@@ -67,7 +74,7 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	// Deny order if user doesn't have the funds
 	if totalOrderCost > funds {
 		fmt.Printf("Not enough funds for this order!\n")
-		writer.WriteHeader(http.StatusBadRequest)
+		writer.WriteHeader(http.StatusForbidden)
 		return
 	}
 
@@ -105,6 +112,14 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	json.NewEncoder(writer).Encode(stocksOwned)
 }
 
+/*
+Http status meanings in this function:
+404 - Username not found
+405 - Ticker not found
+406 - User doesn't any shares of the stock he wants to sell
+407 - Invalid shares quantity input
+408 - User trying to sell more shares than he owns
+*/
 func SellStock(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 
@@ -116,7 +131,7 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 	var credentials Credentials
 	if err := DB.Where("username = ?", newSellOrder.Username).First(&credentials).Error; err != nil {
 		fmt.Printf("Error finding username\n")
-		writer.WriteHeader(http.StatusBadRequest)
+		writer.WriteHeader(http.StatusNotFound)
 		return
 	}
 
@@ -129,7 +144,7 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 	var stock Stock
 	if err := DB.Where("ticker = ?", newSellOrder.Ticker).First(&stock).Error; err != nil {
 		fmt.Printf("Error finding ticker\n")
-		writer.WriteHeader(http.StatusBadRequest)
+		writer.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
 
@@ -139,14 +154,14 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 	if err := DB.Where("username = ? AND ticker = ?", newSellOrder.Username, newSellOrder.Ticker).First(&stocksOwned).Error; err != nil {
 		// Doesn't exist
 		fmt.Printf("User does not own %s. Cannot sell what you don't own!\n", newSellOrder.Ticker)
-		writer.WriteHeader(http.StatusBadRequest)
+		writer.WriteHeader(http.StatusNotAcceptable)
 		return
 	}
 
 	// Base restriction on share purchase amount
 	if newSellOrder.Shares > 50 || newSellOrder.Shares <= 0 {
 		fmt.Printf("Invalid input for shares\n")
-		writer.WriteHeader(http.StatusBadRequest)
+		writer.WriteHeader(http.StatusProxyAuthRequired)
 		return
 	}
 
@@ -156,7 +171,7 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 	if stocksOwned.Shares < newSellOrder.Shares {
 		// User selling more shares than he owns
 		fmt.Printf("%s attempting to sell more shares of %s than he owns!\n", newSellOrder.Username, newSellOrder.Ticker)
-		writer.WriteHeader(http.StatusBadRequest)
+		writer.WriteHeader(http.StatusRequestTimeout)
 		return
 	}
 	// Update Funds
