@@ -1,10 +1,8 @@
 package main
 
 import (
-	"context"
 	"database/sql"
 	"encoding/json"
-	"github.com/dgrijalva/jwt-go"
 	"github.com/gorilla/securecookie"
 	"gorm.io/gorm"
 	"log"
@@ -23,11 +21,6 @@ type Credentials struct {
 	Username string  `json:"username"`
 	Password string  `json:"password"`
 	Funds    float64 `json:"funds"`
-}
-
-type Claims struct {
-	Username string `json:"username"`
-	jwt.StandardClaims
 }
 
 func login(writer http.ResponseWriter, router *http.Request) {
@@ -113,11 +106,13 @@ func signup(writer http.ResponseWriter, router *http.Request) {
 		return
 	}
 	//create new user as username doesn't exist already
-	log.Printf(newCredentials.Username)
 
 	DB.Create(&newCredentials)
-	json.NewEncoder(writer).Encode(newCredentials)
 
+	err = json.NewEncoder(writer).Encode(newCredentials)
+	if err != nil {
+		return
+	}
 	writer.WriteHeader(http.StatusOK)
 	log.Printf("Successfully saved username and password")
 }
@@ -157,92 +152,6 @@ func deleteCredentials(writer http.ResponseWriter, router *http.Request) {
 		writer.WriteHeader(http.StatusConflict)
 	}
 
-}
-
-func verifyToken(w http.ResponseWriter, r *http.Request) {
-	cookie, err := r.Cookie("loggedIn")
-	if err != nil {
-		if err == http.ErrNoCookie {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	tokenStr := cookie.Value
-	claims := &Claims{}
-
-	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecretKey, nil
-	})
-
-	if err != nil {
-		if err == jwt.ErrSignatureInvalid {
-			w.WriteHeader(http.StatusUnauthorized)
-			return
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-
-	if !token.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
-
-	w.WriteHeader(http.StatusOK)
-	log.Printf(tokenStr)
-
-	json.NewEncoder(w).Encode(claims)
-}
-
-func ParseToken(tokenStr string) (*jwt.StandardClaims, error) {
-	claims := &jwt.StandardClaims{}
-	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecretKey, nil
-	})
-
-	if err != nil || !token.Valid {
-		return nil, err
-	}
-
-	return claims, nil
-}
-
-func generateToken(username string) (string, error) {
-	expirationTime := time.Now().Add(24 * time.Hour)
-	claims := &jwt.StandardClaims{
-		Id:        username,
-		ExpiresAt: expirationTime.Unix(),
-	}
-
-	token := jwt.NewWithClaims(jwt.SigningMethodHS256, claims)
-	return token.SignedString(jwtSecretKey)
-}
-
-func authenticateToken(next http.Handler) http.Handler {
-	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		cookie, err := r.Cookie("token")
-		if err != nil {
-			if err == http.ErrNoCookie {
-				w.WriteHeader(http.StatusUnauthorized)
-				return
-			}
-			w.WriteHeader(http.StatusBadRequest)
-			return
-		}
-
-		claims, err := ParseToken(cookie.Value)
-		if err != nil {
-			http.Error(w, "unauthorized", http.StatusUnauthorized)
-			return
-		}
-
-		// Token is valid, pass it to the next middleware or handler
-		ctx := context.WithValue(r.Context(), "username", claims.Id)
-		next.ServeHTTP(w, r.WithContext(ctx))
-	})
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {

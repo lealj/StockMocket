@@ -31,13 +31,11 @@ export class LoginsignuppageComponent implements OnInit
   constructor(private accountInfo: LoginSignUpService, private Routing: Router) {
     this.checkAuthorization();
   }
-
   checkAuthorization() {
     this.accountInfo.verify().then((isLoggedIn) => {
       if (isLoggedIn) {
         this.Routing.navigate(['/logout']);
-      }
-      else {
+      } else {
         this.Routing.navigate(['/account']);
       }
     });
@@ -69,7 +67,6 @@ export class LoginsignuppageComponent implements OnInit
           this.loginMessageToPrint = '';
           //here is where we will route to the next page because we determine that the login attempt was successful (status of POST 200)!!
           this.Routing.navigate(['/charts']); //send it to the /charts that Freddy set up (which will be the main page)
-
         }
         /*
         else if (response.status === 401)
@@ -171,5 +168,9 @@ export class LoginsignuppageComponent implements OnInit
     }
   }
 
-
+  async getData() {
+    const response = await this.accountInfo.claimData();
+    console.log('Username:', response.username);
+    console.log('Claims:', response.claims);
+  }
 }

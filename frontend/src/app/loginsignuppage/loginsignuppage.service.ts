@@ -25,7 +25,7 @@ export class LoginSignUpService {
   DeleteUNandPW(username: string): Promise<any>
   {
     const acctInfo = { username: username };
-    return this.client.post("/credentials/delete", acctInfo, {observe: 'response'}).toPromise();
+    return this.client.post("/credentials/delete", acctInfo, {withCredentials: true, observe: 'response'}).toPromise();
   }
 
   verify(): Promise<boolean> {
@@ -33,10 +33,11 @@ export class LoginSignUpService {
       .catch(() => false);
   }
 
+  claimData(): Promise<any> {
+    return this.client.get("/credentials/authorize", {withCredentials: true}).toPromise()
+  }
+
   async logout(): Promise<void> {
     await this.client.get("/credentials/logout",{ withCredentials: true }).toPromise()
   }
-
-
-
 }
