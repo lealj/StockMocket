@@ -3,6 +3,7 @@ package main
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"log"
 	"net/http"
 	"time"
@@ -167,4 +168,28 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	})
 
 	w.WriteHeader(http.StatusOK)
+}
+
+// username should be established if this called, but add another check anyways
+func GetUserFunds(writer http.ResponseWriter, router *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
+	// should jsut contain username
+	var creds Credentials
+	err := json.NewDecoder(router.Body).Decode(&creds)
+
+	if err != nil {
+		fmt.Printf("Error decoding: %v", err)
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	// Now we must check if the username is in the database
+	if err := DB.Where("username = ?", creds.Username).First(&creds).Error; err != nil {
+		fmt.Printf("Error finding username\n")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	json.NewEncoder(writer).Encode(&creds.Funds)
 }

@@ -25,6 +25,7 @@ func httpHandler() http.Handler {
 	rout.HandleFunc("/credentials/login", login).Methods("POST")
 	rout.Handle("/credentials/delete", JWTAuthProtection(http.HandlerFunc(deleteCredentials))).Methods("POST")
 	rout.HandleFunc("/credentials/logout", logout).Methods("GET")
+	rout.HandleFunc("/credentials/funds", GetUserFunds).Methods("POST")
 
 	// funcs regarding what user owns
 	rout.HandleFunc("/userstock/{username}", GetStocksOwned).Methods("POST")
