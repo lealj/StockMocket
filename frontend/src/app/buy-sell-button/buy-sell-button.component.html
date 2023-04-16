@@ -5,13 +5,11 @@
 <div *ngIf="showBuyInput">
     <label for="quantity">Quantity:</label>
     <input type="number" id="quantity" name="quantity" [(ngModel)]="quantity">
-    <input [(ngModel)]="username" id="Username" placeholder="Enter your username" type ="text" value = "" data-cy="loginUNBox"/>
     <button (click)="Buy(quantity)">Confirm Purchase</button>
 </div>
 
 <div *ngIf="showSellInput">
     <label for="quantity">Quantity:</label>
     <input type="number" id="quantity" name="quantity" [(ngModel)]="quantity">
-    <input [(ngModel)]="username" id="Username" placeholder="Enter your username" type ="text" value = "" data-cy="loginUNBox"/>
     <button (click)="Sell(quantity)">Confirm Sale</button>
 </div>

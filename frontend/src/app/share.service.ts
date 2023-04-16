@@ -9,7 +9,7 @@ export class ShareService {
   constructor(private client: HttpClient) { }
 
   Buy(username: string, ticker: string, quantity: number): Promise <any> {
-    const url = `userstock/${username}`;
+    const url = `userstock/${username}/buy`;
     const body = {
       ticker: ticker,
       shares: quantity
@@ -19,7 +19,7 @@ export class ShareService {
   }
 
   Sell(username: string, ticker: string, quantity: number): Promise <any>{
-    const url = `userstock/${username}`;
+    const url = `userstock/${username}/sell`;
     const body = {
       ticker: ticker,
       shares: quantity
