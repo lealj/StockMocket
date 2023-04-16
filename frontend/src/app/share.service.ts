@@ -8,8 +8,14 @@ export class ShareService {
 
   constructor(private client: HttpClient) { }
 
+  getUser (): Promise <any> {
+    //remember to use backend function
+    const url = 'credentials/NAME OF FUNCTION IN BACKEND FOR GETTING USER';
+    return this.client.get(url, {observe: 'response'}).toPromise();
+  }
+
   Buy(username: string, ticker: string, quantity: number): Promise <any> {
-    const url = `userstock/${username}`;
+    const url = `userstock/${username}/buy`;
     const body = {
       ticker: ticker,
       shares: quantity
@@ -19,7 +25,7 @@ export class ShareService {
   }
 
   Sell(username: string, ticker: string, quantity: number): Promise <any>{
-    const url = `userstock/${username}`;
+    const url = `userstock/${username}/sell`;
     const body = {
       ticker: ticker,
       shares: quantity
