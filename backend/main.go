@@ -13,6 +13,8 @@ func httpHandler() http.Handler {
 	rout := mux.NewRouter()
 
 	/* API REQUESTS */
+	// Make sure urls with {username} can't be confused with another url ie:
+	// userstock/{username} and userstock/reset
 
 	// funcs regarding credentials & user info
 	//secure := rout.PathPrefix("/credentials").Subrouter()
@@ -28,14 +30,15 @@ func httpHandler() http.Handler {
 	rout.HandleFunc("/userstock/{username}", GetStocksOwned).Methods("POST")
 	rout.HandleFunc("/userstock/buy/{username}", PurchaseStock).Methods("POST")
 	rout.HandleFunc("/userstock/sell/{username}", SellStock).Methods("POST")
+	rout.HandleFunc("/resetaccount", ResetAccount).Methods("POST")
+
+	// portfolio funcs
+	rout.HandleFunc("/portfoliohistory/{username}", GetLogs).Methods("POST")
+	rout.HandleFunc("/portfoliovalue/{username}", GetUserPortfolioInfo).Methods("POST")
 
 	// funcs regarding stock and market info
 	rout.HandleFunc("/stocks", GetStocks).Methods("GET")
-
-	//issues here
 	rout.HandleFunc("/stocks/{ticker}", GetStock).Methods("GET")
-
-	rout.HandleFunc("/updatestocks", UpdateStocks).Methods("GET")
 	rout.HandleFunc("/querystocks", QueryStocks).Methods("POST")
 
 	//must be last
@@ -59,6 +62,7 @@ func httpHandler() http.Handler {
 func main() {
 	host := "127.0.0.1:8080"
 	InitialMigration()
+	UpdateStocks()
 	if err := http.ListenAndServe(host, httpHandler()); err != nil {
 		log.Fatalf("Failed to listen on %s: %v", host, err)
 	}

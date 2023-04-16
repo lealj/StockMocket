@@ -53,13 +53,10 @@ func GetStock(writer http.ResponseWriter, rout *http.Request) {
 }
 
 // update stocks with today's price
-func UpdateStocks(writer http.ResponseWriter, rout *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
+func UpdateStocks() {
+	fmt.Printf("Updating stocks...\n")
 	// List of tickers in database
 	tickers := []string{"KO", "MSFT", "LMT", "AAPL", "WFC"}
-
-	// to return json data
-	var updatedStocks []Stock
 
 	for _, ticker := range tickers {
 		q, err := quote.Get(ticker)
@@ -70,7 +67,7 @@ func UpdateStocks(writer http.ResponseWriter, rout *http.Request) {
 
 		p := q.RegularMarketPrice
 
-		fmt.Printf("%f, %s\n", p, ticker)
+		//fmt.Printf("%f, %s\n", p, ticker)
 
 		var stock Stock
 		DB.Where("ticker = ?", ticker).First(&stock)
@@ -85,10 +82,8 @@ func UpdateStocks(writer http.ResponseWriter, rout *http.Request) {
 		}
 		stock.CreatedAt = createdAt
 		DB.Save(&stock)
-
-		updatedStocks = append(updatedStocks, stock)
 	}
-	json.NewEncoder(writer).Encode(updatedStocks)
+	fmt.Printf("\nStocks up to date.\n")
 }
 
 func QueryStocks(writer http.ResponseWriter, router *http.Request) {

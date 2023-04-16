@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import {Observable, observable} from "rxjs";
+import { LoginSignUpService } from '../loginsignuppage/loginsignuppage.service'
 
 @Injectable({
   providedIn: 'root'
@@ -8,7 +9,10 @@ import {Observable, observable} from "rxjs";
 
 export class LogOutPageService {
 
-  constructor(private client: HttpClient) { }
+  constructor(
+    private client: HttpClient,
+    private loginSignUpService: LoginSignUpService  
+    ) {}
 
   DeleteUNandPW(username: string): Promise<any>
   {
@@ -25,6 +29,12 @@ export class LogOutPageService {
     await this.client.get("/credentials/logout",{ withCredentials: true }).toPromise()
   }
 
-
+  async resetAccount(): Promise<any>
+  {
+    const userData = await this.loginSignUpService.claimData()
+    const username = userData.username
+    const accntInfo = { username: username}
+    return this.client.post("/resetaccount", accntInfo, {observe: 'response'}).toPromise();
+  }
 
 }

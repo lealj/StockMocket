@@ -22,6 +22,7 @@ export class LogOutPageComponent implements OnInit
   usernameD = '';
   deleteMessageToPrint = '';
   logOutMessageToPrint = '';
+  resetMessageToPrint = '';
   public response: any;
 
 
@@ -115,5 +116,29 @@ export class LogOutPageComponent implements OnInit
 
   }
 
+  ResetAccount()
+  {
+    this.accountInfo.resetAccount().then((response) => {
+      console.log("Here we are")
+      if (response.status === 200) {
+        console.log("Reset account successfully")
+        this.resetMessageToPrint = "Reset Successfully!";
+      }
+      
+    }).catch((error) => {
+        if (error.error === null)
+        {
+          //console.log("Correct response, error body is just not empty")
+          console.log("Reset failed")
+          this.resetMessageToPrint = "Reset failed";
+          console.log(error);
+        } else {
+          console.log("Hello, reset failed")
+          this.resetMessageToPrint = "Reset failed";
+          console.log(error);
+        }
+      }
+    );
+  }
 
 }

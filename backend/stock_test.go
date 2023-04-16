@@ -18,7 +18,7 @@ func MockDB_Init() *gorm.DB {
 	if err != nil {
 		log.Fatalf("failed to open mock database: %v", err)
 	}
-	mockDB.AutoMigrate(&Stock{}, &UserStocks{}, &Credentials{})
+	mockDB.AutoMigrate(&Stock{}, &UserStocks{}, &Credentials{}, &PortfolioHistory{})
 
 	return mockDB
 }
@@ -94,7 +94,8 @@ func TestGetStock(t *testing.T) {
 	}
 }
 
-func TestUpdateStocks(t *testing.T) {
+// Helper for TestUpdateStocks
+func SetStockZero(t *testing.T) {
 	mockDB := MockDB_Init()
 	defer func() {
 		dbInstance, _ := mockDB.DB()
@@ -111,36 +112,28 @@ func TestUpdateStocks(t *testing.T) {
 		tstock.Price = 0
 		DB.Save(&tstock)
 	}
+}
 
-	r := httptest.NewRequest("GET", "/updatestocks", nil)
-	r.Header.Set("Content-Type", "application/json")
-	w := httptest.NewRecorder()
+func TestUpdateStocks(t *testing.T) {
+	mockDB := MockDB_Init()
+	defer func() {
+		dbInstance, _ := mockDB.DB()
+		_ = dbInstance.Close()
+	}()
 
-	UpdateStocks(w, r)
+	DB = mockDB
 
-	// check the response
-	if status := w.Code; status != http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v\n want %v\n", status, http.StatusOK)
-	}
+	// Update stocks
+	UpdateStocks()
 
-	body := w.Body.String()
-
-	//tests if body contains the wrong price values that were set earlier ($0)
-	expectedStrings := []string{`"ticker":"MSFT","price":280.51`, `"ticker":"LMT","price":474.19`,
-		`"ticker":"WFC","price":37.97`, `"ticker":"AAPL","price":160.77`, `"ticker":"KO","price":61.86`}
-	containedString := 0
-
-	for _, s := range expectedStrings {
-		if !strings.Contains(body, s) {
-			containedString = 1
-			t.Errorf("Body had incorrect prices for. %s", s)
+	// Check that they're not zero
+	var allstocks []Stock
+	DB.Find(&allstocks)
+	for _, st := range allstocks {
+		if st.Price == 0 {
+			t.Errorf("%s did not update. Still 0.", st.Ticker)
 		}
 	}
-
-	if containedString == 1 {
-		t.Errorf("Here is the body received: %v", body)
-	}
-
 }
 
 func TestQueryStocks(t *testing.T) {

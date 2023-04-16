@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"time"
 
@@ -18,15 +19,6 @@ type UserStocks struct {
 	// can add variable here summing the prices paid for the stocks, for the calculation of "gains/losses"
 	// so 1 share bought at $50, another share bought at $75 -> $125 total. Future share worth $100. So profit = 100x2 - (50+75) = 200-125=$75
 }
-
-/* To keep a log of purchases (for future use potentially)
-type PurchaseHistory struct {
-	gorm.Model
-	Username	string `json:"username"`
-	Ticker 		string `json:"ticker"`
-	Shares 		int   `json:"shares`
-}
-*/
 
 func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
@@ -49,7 +41,7 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	// Get funds
 	funds := credentials.Funds
 
-	//fmt.Printf("Funds for user %s: $%f\n", newPurchaseOrder.Username, funds)
+	fmt.Printf("Funds for user %s: $%f\n", newPurchaseOrder.Username, funds)
 
 	// Get the stock data from Stocks (using ticker)
 	var stock Stock
@@ -62,6 +54,13 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	pricePerShare := stock.Price
 	sharesInOrder := newPurchaseOrder.Shares
 
+	// Base restriction on share purchase amount
+	if sharesInOrder > 50 || sharesInOrder <= 0 {
+		fmt.Printf("Invalid input for shares\n")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	// Calculate total order cost
 	totalOrderCost := float64(pricePerShare * float64(sharesInOrder))
 
@@ -71,6 +70,9 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	// if reach this point, the purchase order is approved - create log
+	CreateLog("buy", &newPurchaseOrder, totalOrderCost)
 
 	var stocksOwned UserStocks
 	// Check if user already owns shares of the company
@@ -140,6 +142,14 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
+
+	// Base restriction on share purchase amount
+	if newSellOrder.Shares > 50 || newSellOrder.Shares <= 0 {
+		fmt.Printf("Invalid input for shares\n")
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
 	// Does exist
 	fmt.Printf("User owns %d shares of %s.\n", stocksOwned.Shares, newSellOrder.Ticker)
 	// Check that shares selling is <= shares owned
@@ -155,6 +165,9 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 	totalOrderValue := float64(pricePerShare * float64(sharesInOrder))
 	credentials.Funds = credentials.Funds + totalOrderValue
 	DB.Save(&credentials)
+
+	// create log
+	CreateLog("sell", &newSellOrder, totalOrderValue)
 
 	// Update share count
 	if stocksOwned.Shares-newSellOrder.Shares == 0 {
@@ -180,4 +193,35 @@ func GetStocksOwned(writer http.ResponseWriter, router *http.Request) {
 	DB.Where("username = ?", userstock.Username).Find(&user_stocks)
 	// this can be returned in a better format, or it can be parsed in front end.
 	json.NewEncoder(writer).Encode(user_stocks)
+}
+
+func ResetAccount(writer http.ResponseWriter, router *http.Request) {
+	writer.Header().Set("Content-Type", "application/json")
+
+	// get credentials
+	var creds Credentials
+	json.NewDecoder(router.Body).Decode(&creds)
+	log.Printf("Username to reset: %s", creds.Username)
+
+	// reset funds to default value
+	err2 := DB.Where("username = ?", creds.Username).First(&creds).Error
+	if err2 != nil {
+		fmt.Printf("Username not found in credentials: %v", err2)
+		http.Error(writer, "Username not found in credentials", http.StatusBadRequest)
+		return
+	}
+	creds.Funds = 1000
+	DB.Save(&creds)
+
+	deletion := DB.Where("username = ?", creds.Username).Unscoped().Delete(&UserStocks{})
+	if deletion.Error != nil {
+		fmt.Printf("Error finding username during deletion (userstocks): %v\n", deletion.Error)
+		http.Error(writer, "Error during deletion (userstocks)", http.StatusBadRequest)
+		return
+	}
+
+	DeleteAllLogs(creds.Username)
+
+	writer.WriteHeader(http.StatusOK)
+
 }
