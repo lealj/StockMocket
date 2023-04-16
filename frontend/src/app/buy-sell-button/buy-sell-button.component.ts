@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { ShareService } from '../share.service';
 import { error } from 'cypress/types/jquery';
+import { LoginSignUpService } from '../loginsignuppage/loginsignuppage.service'
+
 
 @Component({
   selector: 'app-buy-sell-button',
@@ -15,14 +17,12 @@ export class BuySellButtonComponent implements OnInit {
   username = '';
 
 
-  constructor(private shareAction: ShareService){}
-  ngOnInit(): void {
-   this.shareAction.getUser().then((username: string) => {
-    this.username = username;
-   }).catch((error) => {
-    console.error(error);
-   });
-  }
+  constructor(
+    private shareAction: ShareService,
+    private loginSignUpService: LoginSignUpService
+    ){}
+
+  ngOnInit(): void {}
 
   onBuyClick(): void {
     //when button is clicked we will show an input box for the quantity of shares
@@ -30,7 +30,9 @@ export class BuySellButtonComponent implements OnInit {
     this.showSellInput = false;
   }
 
-  Buy(quantity: number){ //generalize to all tickers
+  async Buy(quantity: number){ //generalize to all tickers
+    const userData = await this.loginSignUpService.claimData();
+    this.username = userData.username;
     this.shareAction.Buy(this.username, "msft", quantity);
     this.showBuyInput = false; //hides input box after confirming order
   }
@@ -39,7 +41,9 @@ export class BuySellButtonComponent implements OnInit {
     this.showSellInput = true;
     this.showBuyInput = false;
   }
-  Sell(quantity: number){ //generalize to all tickers
+  async Sell(quantity: number){ //generalize to all tickers
+    const userData = await this.loginSignUpService.claimData();
+    this.username = userData.username;
     this.shareAction.Sell(this.username, "msft", quantity);
     this.showSellInput = false; 
   }
