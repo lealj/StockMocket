@@ -11,8 +11,6 @@ import { LogOutPageService } from './log-out-page.service'
   styleUrls: ['./log-out-page.component.scss']
 })
 
-
-
 export class LogOutPageComponent implements OnInit
 {
   

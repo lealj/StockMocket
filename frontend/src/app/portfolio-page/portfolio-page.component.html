@@ -1,1 +1,57 @@
-<p>portfolio-page works!</p>
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Button List and Text Example</title>
+    <style>
+      /* Style for the container */
+      .container {
+        display: flex;
+        height: 100%;
+      }
+
+      /* Style for the button container */
+      #button-container {
+        width: 80%;
+        height: 100%;
+        background-color: #f0f0f0;
+        padding: 20px;
+      }
+
+      /* Style for each button */
+      button {
+        display: block;
+        margin-bottom: 2px;
+        font-size: 16px;
+        padding: 20px;
+        background-color: #ddd;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+      }
+
+      /* Style for the text container */
+      #text-container {
+        width: 70%;
+        height: 100%;
+        padding: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Button List and Text Example</h1>
+    <div class="container">
+      <div id="button-container">
+        <button>Button 1</button>
+        <button>Button 2</button>
+        <button>Button 3</button>
+        <button>Button 4</button>
+        <button>Button 5</button>
+      </div>
+      <div id="text-container">
+        <h1>Portfolio Value: {{ portfolioValue?.toFixed(2) }}</h1>
+        <h2 [ngStyle]="{'color': portfolioChange >= 0 ? 'green' : 'red'}">Overall Change: {{ portfolioChange?.toFixed(2) }}%</h2>
+        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+      </div>
+    </div>
+  </body>
+</html>

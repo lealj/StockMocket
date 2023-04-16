@@ -35,7 +35,7 @@ func httpHandler() http.Handler {
 
 	// portfolio funcs
 	rout.HandleFunc("/portfoliohistory/{username}", GetLogs).Methods("POST")
-	rout.HandleFunc("/portfoliovalue/{username}", GetUserPortfolioInfo).Methods("POST")
+	rout.HandleFunc("/portfoliovalue", GetUserPortfolioInfo).Methods("POST")
 
 	// funcs regarding stock and market info
 	rout.HandleFunc("/stocks", GetStocks).Methods("GET")

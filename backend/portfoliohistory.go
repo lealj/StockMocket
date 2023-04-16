@@ -64,17 +64,16 @@ func GetUserPortfolioInfo(writer http.ResponseWriter, router *http.Request) {
 	// get username
 	var log PortfolioHistory
 	json.NewDecoder(router.Body).Decode(&log)
-
+	fmt.Printf("Username received: %s", log.Username)
 	portfolio_value := GetUserPortfolioValue(log.Username)
 	pv_change_percent := ((portfolio_value - 1000) / 1000) * 100
 	// indiv stock info
 
-	portfolio_info := PortfolioInfo{
-		PortfolioValue: portfolio_value,
-		PVChange:       pv_change_percent,
-	}
+	var portinfo PortfolioInfo
+	portinfo.PortfolioValue = portfolio_value
+	portinfo.PVChange = pv_change_percent
 
-	json.NewEncoder(writer).Encode(portfolio_info)
+	json.NewEncoder(writer).Encode(&portinfo)
 }
 
 // Gets value of portfolio based on stock price * shares owned + funds
