@@ -28,19 +28,19 @@ func httpHandler() http.Handler {
 	rout.HandleFunc("/credentials/funds", GetUserFunds).Methods("POST")
 
 	// funcs regarding what user owns
-	rout.HandleFunc("/userstock/{username}", GetStocksOwned).Methods("POST")
-	rout.HandleFunc("/userstock/buy/{username}", PurchaseStock).Methods("POST")
-	rout.HandleFunc("/userstock/sell/{username}", SellStock).Methods("POST")
-	rout.HandleFunc("/resetaccount", ResetAccount).Methods("POST")
+	rout.HandleFunc("/userstock/owned", GetStocksOwned).Methods("POST") //pass in username
+	rout.HandleFunc("/userstock/buy", PurchaseStock).Methods("POST")    //pass in username, ticker, shares
+	rout.HandleFunc("/userstock/sell", SellStock).Methods("POST")       //pass in username, ticker, shares
+	rout.HandleFunc("/resetaccount", ResetAccount).Methods("POST")      //pass in username
 
 	// portfolio funcs
-	rout.HandleFunc("/portfoliohistory/{username}", GetLogs).Methods("POST")
-	rout.HandleFunc("/portfoliovalue", GetUserPortfolioInfo).Methods("POST")
+	rout.HandleFunc("/portfoliohistory", GetLogs).Methods("POST")            //pass in username
+	rout.HandleFunc("/portfoliovalue", GetUserPortfolioInfo).Methods("POST") //pass in username
 
 	// funcs regarding stock and market info
 	rout.HandleFunc("/stocks", GetStocks).Methods("GET")
-	rout.HandleFunc("/stocks/{ticker}", GetStock).Methods("GET")
-	rout.HandleFunc("/querystocks", QueryStocks).Methods("POST")
+	rout.HandleFunc("/stock", GetStock).Methods("GET")           //pass in ticker
+	rout.HandleFunc("/querystocks", QueryStocks).Methods("POST") // see func
 
 	//must be last
 	rout.PathPrefix("/").Handler(AngularHandler).Methods("GET")
