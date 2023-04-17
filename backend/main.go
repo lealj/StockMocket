@@ -20,12 +20,13 @@ func httpHandler() http.Handler {
 	//secure := rout.PathPrefix("/credentials").Subrouter()
 	//secure.Use(authenticateToken)
 
-	rout.HandleFunc("/credentials/authorize", authTokenGetClaims).Methods("GET")
+	rout.HandleFunc("/credentials/authorize", getClaimsHandler).Methods("GET")
 	rout.HandleFunc("/credentials/signup", signup).Methods("POST")
 	rout.HandleFunc("/credentials/login", login).Methods("POST")
-	rout.Handle("/credentials/delete", JWTAuthProtection(http.HandlerFunc(deleteCredentials))).Methods("POST")
+	// A1: The delete function is protected and cannot be accessed unless the user is logged in.
+	rout.Handle("/credentials/delete", JWTPathProtection(http.HandlerFunc(deleteCredentials))).Methods("POST")
 	rout.HandleFunc("/credentials/logout", logout).Methods("GET")
-	rout.HandleFunc("/credentials/funds", GetUserFunds).Methods("POST")
+	rout.Handle("/credentials/funds", JWTPathProtection(http.HandlerFunc(GetUserFunds))).Methods("POST")
 
 	// funcs regarding what user owns
 	rout.HandleFunc("/userstock/owned", GetStocksOwned).Methods("POST") //pass in username

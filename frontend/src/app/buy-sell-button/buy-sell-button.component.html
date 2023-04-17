@@ -5,12 +5,12 @@
 
 <div *ngIf="showBuyInput">
     <label for="quantity">Quantity:</label>
-    <input type="number" id="quantity" name="quantity" [(ngModel)]="quantity">
+    <input type="number" id="quantity" name="quantity" [(ngModel)]="quantity" data-cy="buyButton">
     <button (click)="Buy(quantity)">Confirm Purchase</button>
 </div>
 
 <div *ngIf="showSellInput">
     <label for="quantity">Quantity:</label>
-    <input type="number" id="quantity" name="quantity" [(ngModel)]="quantity">
+    <input type="number" id="quantity" name="quantity" [(ngModel)]="quantity" data-cy="sellButton">
     <button (click)="Sell(quantity)">Confirm Sale</button>
 </div>

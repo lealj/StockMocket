@@ -171,6 +171,18 @@ export class LoginsignuppageComponent implements OnInit
   async getData() {
     const response = await this.accountInfo.claimData();
     console.log('Username:', response.username);
-    console.log('Claims:', response.claims);
+    console.log('Claims:', response);
+
+    // This is an example of the data that can be obtained from HTTPOnly Cookies
+    /* {username: 'test', role: 'admin', aud: 'test', exp: 1681760571, jti: '33', …}
+     *  aud: "test"
+     *  exp: 1681760571
+     *  iat: 1681674171
+     *  iss: "StockMocket"
+     *  jti: "33"
+     *  role: "admin"
+     *  sub: "TheCODE"
+     *  username: "test"
+     */
   }
 }

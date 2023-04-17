@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/dgrijalva/jwt-go"
 	"net/http"
@@ -15,7 +16,9 @@ type MyClaims struct {
 	jwt.StandardClaims
 }
 
-func JWTAuthProtection(next http.Handler) http.Handler {
+// JWTPathProtection This handler can be applied to anything that requires the user to log in. To view an example of how to do this. View
+// main.go and the comment starting in A1
+func JWTPathProtection(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		cookie, err := r.Cookie("loggedIn")
 		if err != nil {
@@ -25,7 +28,7 @@ func JWTAuthProtection(next http.Handler) http.Handler {
 
 		token, err := jwt.Parse(cookie.Value, func(token *jwt.Token) (interface{}, error) {
 			if jwt.GetSigningMethod("HS256") != token.Method {
-				return nil, fmt.Errorf("Unexpected signing method: %v", token.Method)
+				return nil, fmt.Errorf("unexpected signing method: %v", token.Method)
 			}
 			return jwtSecretKey, nil
 		})
@@ -42,7 +45,9 @@ func JWTAuthProtection(next http.Handler) http.Handler {
 	})
 }
 
-func authTokenGetClaims(w http.ResponseWriter, r *http.Request) {
+func getClaimsHandler(w http.ResponseWriter, r *http.Request) {
+	// This is a handler to get claims. Claims can be obtained within any request that is asked from frontend as long as with
+	// credentials is true in the request. Example of this in claimData in frontend login service
 	cookie, err := r.Cookie("loggedIn")
 	if err != nil {
 		if err == http.ErrNoCookie {
@@ -52,14 +57,8 @@ func authTokenGetClaims(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-
 	tokenStr := cookie.Value
-	claims := &MyClaims{}
-
-	token, err := jwt.ParseWithClaims(tokenStr, claims, func(token *jwt.Token) (interface{}, error) {
-		return jwtSecretKey, nil
-	})
-
+	claims, err := extractClaims(tokenStr)
 	if err != nil {
 		if err == jwt.ErrSignatureInvalid {
 			w.WriteHeader(http.StatusUnauthorized)
@@ -68,12 +67,9 @@ func authTokenGetClaims(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
-	if !token.Valid {
-		w.WriteHeader(http.StatusUnauthorized)
-		return
-	}
 
 	w.WriteHeader(http.StatusOK)
+	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(claims)
 	if err != nil {
 		return
@@ -81,6 +77,8 @@ func authTokenGetClaims(w http.ResponseWriter, r *http.Request) {
 }
 
 func generateToken(username string) (string, error) {
+	// Generates a token that stores encoded information using HS256 bit encryption. This generates a token that is used
+	// with HTTPOnly cookies. This means that the cookie is transferred safely and is more protected from XSS attacks.
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, MyClaims{
 		Username: username,
 		Role:     "admin",
@@ -95,4 +93,27 @@ func generateToken(username string) (string, error) {
 	})
 
 	return token.SignedString(jwtSecretKey)
+}
+
+func extractClaims(tokenString string) (*MyClaims, error) {
+	// This works in conjunction with getClaimsHandler. This will return claims as well as verify the token. If the user is
+	// not logged in, this will verify that.
+	// This can be called to extract claims from anywhere in the DB.
+	token, err := jwt.ParseWithClaims(tokenString, &MyClaims{}, func(token *jwt.Token) (interface{}, error) {
+		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
+			return nil, fmt.Errorf("unexpected signing method: %v", token.Header["alg"])
+		}
+		return jwtSecretKey, nil
+	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	claims, ok := token.Claims.(*MyClaims)
+	if !ok || !token.Valid {
+		return nil, errors.New("invalid token")
+	}
+
+	return claims, nil
 }

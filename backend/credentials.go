@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
 	"time"
@@ -157,8 +158,7 @@ func deleteCredentials(writer http.ResponseWriter, router *http.Request) {
 }
 
 func logout(w http.ResponseWriter, r *http.Request) {
-	// delete JWT cookie
-
+	// deletes cookies from local browser storage
 	http.SetCookie(w, &http.Cookie{
 		Name:     "loggedIn",
 		Value:    "",
@@ -170,13 +170,35 @@ func logout(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 }
 
-// username should be established if this called, but add another check anyways
+// GetUserFunds is protected and user must be logged in to get the user funds
 func GetUserFunds(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
+	// instead of having to send the username each time, as long as the user is logged in, the HTTPCookie can gather
+	// the username from the claims. All you must do is call it from the front end with an empty json body
+	// It should work as of right now with no changed to other sections but more code can be done like this now.
+	cookie, err := router.Cookie("loggedIn")
+	if err != nil {
+		if err == http.ErrNoCookie {
+			writer.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	tokenStr := cookie.Value
+
+	claims, err := extractClaims(tokenStr)
+	if err != nil {
+		if err == jwt.ErrSignatureInvalid {
+			writer.WriteHeader(http.StatusUnauthorized)
+			return
+		}
+		writer.WriteHeader(http.StatusBadRequest)
+		return
+	}
 
 	// should jsut contain username
 	var creds Credentials
-	err := json.NewDecoder(router.Body).Decode(&creds)
 
 	if err != nil {
 		fmt.Printf("Error decoding: %v", err)
@@ -185,11 +207,16 @@ func GetUserFunds(writer http.ResponseWriter, router *http.Request) {
 	}
 
 	// Now we must check if the username is in the database
-	if err := DB.Where("username = ?", creds.Username).First(&creds).Error; err != nil {
+	if err := DB.Where("username = ?", claims.Username).First(&creds).Error; err != nil {
 		fmt.Printf("Error finding username\n")
 		writer.WriteHeader(http.StatusBadRequest)
 		return
 	}
 
-	json.NewEncoder(writer).Encode(&creds.Funds)
+	log.Printf("Funds Test %v", creds.Funds)
+
+	err = json.NewEncoder(writer).Encode(&creds.Funds)
+	if err != nil {
+		return
+	}
 }
