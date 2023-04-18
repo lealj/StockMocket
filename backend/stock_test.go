@@ -47,14 +47,14 @@ func TestGetStocks(t *testing.T) {
 	}
 
 	body := w.Body.String()
-	//tests if body contains correct id
-	if !strings.Contains(body, `"ID":1`) {
-		t.Errorf("Unexpected body returned. got %v\n; want body to contain: %v\n", body, `"ID":1`)
-	}
+
 	//tests if body contains correct parameters. see "expect"
-	expect := `"ticker":"KO","price":`
-	if !strings.Contains(body, expect) {
-		t.Errorf("Unexpected body returned. got %v\n; want body to contain: %v\n", body, expect)
+	expect := []string{`"ticker":"KO","price":`, `"ticker":"MSFT","price":`,
+		`"ticker":"LMT","price":`, `"ticker":"WFC","price":`, `"ticker":"AAPL","price":`}
+	for _, str := range expect {
+		if !strings.Contains(body, str) {
+			t.Errorf("Unexpected body returned. got %v\n; want body to contain: %v\n", body, expect)
+		}
 	}
 }
 
@@ -94,8 +94,9 @@ func TestGetStock(t *testing.T) {
 	}
 }
 
-// Helper for TestUpdateStocks
-func SetStockZero(t *testing.T) {
+// Helper for showcasing TestUpdateStocks
+
+func TestSetStockZero(t *testing.T) {
 	mockDB := MockDB_Init()
 	defer func() {
 		dbInstance, _ := mockDB.DB()

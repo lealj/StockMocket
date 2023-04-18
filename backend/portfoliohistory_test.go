@@ -33,11 +33,14 @@ func TestGetLogs(t *testing.T) {
 	}
 
 	body := w.Body.String()
-	// expect
-	expect := `"username":"john"`
-	if !strings.Contains(body, expect) {
-		t.Errorf("Unexpected body returned. got %v; want body to contain: %v", body,
-			expect)
+	// expect, dynamic variables shouldn't fail this
+	expected := []string{`"username":"john","ticker":"MSFT","shares":`,
+		`"ordertype":"buy","price":`}
+
+	for _, str := range expected {
+		if !strings.Contains(body, str) {
+			t.Errorf("Unexpected body returned. got %v; want body to contain: %v", body, str)
+		}
 	}
 }
 
@@ -67,10 +70,12 @@ func TestGetUserPortfolioInfo(t *testing.T) {
 	}
 
 	body := w.Body.String()
-	// expect
-	expect := `"portfolio_value":`
-	if !strings.Contains(body, expect) {
-		t.Errorf("Unexpected body returned. got %v; want body to contain: %v", body,
-			expect)
+	// expect - numbers may need adjustment
+	expect := []string{`"portfolio_value":1000`, `"pv_change":0`}
+	for _, str := range expect {
+		if !strings.Contains(body, str) {
+			t.Errorf("Unexpected body returned. got %v; want body to contain: %v", body,
+				str)
+		}
 	}
 }

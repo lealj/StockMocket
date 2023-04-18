@@ -86,7 +86,6 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 		// Doesn't exist - create new purchase order entry in database
 		fmt.Printf("User does not own %s already. Creating entry.\n", newPurchaseOrder.Ticker)
 		DB.Create(&newPurchaseOrder)
-
 	} else {
 		// Does exist - update entry
 		fmt.Printf("User owns %s already. Updating entry.\n", newPurchaseOrder.Ticker)
@@ -104,11 +103,12 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 		fmt.Printf("error parsing time: %v", err)
 	}
 	credentials.CreatedAt = createdAt
-
-	//fmt.Printf("New funds for %s: $%f\n", newPurchaseOrder.Username, credentials.Funds)
 	DB.Save(&credentials)
 
-	json.NewEncoder(writer).Encode(stocksOwned)
+	var ret UserStocks
+	DB.Where("username = ?", newPurchaseOrder.Username).First(&ret)
+
+	json.NewEncoder(writer).Encode(ret)
 }
 
 /*

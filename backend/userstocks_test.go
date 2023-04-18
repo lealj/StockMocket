@@ -72,13 +72,12 @@ func TestPurchaseStock_NoFunds(t *testing.T) {
 	PurchaseStock(w, r)
 
 	// check the response - should be 400, so err if statusok (200)
-	if status := w.Code; status == http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v\n want %v\n", status, http.StatusOK)
+	if status := w.Code; status != http.StatusForbidden {
+		t.Errorf("handler returned wrong status code: got %v\n want %v\n", status, http.StatusForbidden)
 	}
 
 	// check that there is no ownership entry in user_stocks
 	var nofunds_ownership UserStocks
-
 	if err := DB.Where("username = ?", "nofunds").First(&nofunds_ownership).Error; err != nil {
 		if errors.Is(err, gorm.ErrRecordNotFound) {
 			fmt.Println("Username not found")
@@ -110,11 +109,24 @@ func TestSellStock(t *testing.T) {
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
+	var userstockbefore UserStocks
+	DB.Where("username = ? AND ticker = ?", "john", "MSFT").First(&userstockbefore)
+	shares_before_sale := userstockbefore.Shares
+
 	SellStock(w, r)
 
 	// check the response
 	if status := w.Code; status != http.StatusOK {
 		t.Errorf("handler returned wrong status code: got %v\n want %v\n", status, http.StatusOK)
+	}
+
+	// Make sure user has more than 1 share before run func. Otherwise below db query fails
+	var userstockafter UserStocks
+	DB.Where("username = ? AND ticker = ?", "john", "MSFT").First(&userstockafter)
+	shares_after_sale := userstockafter.Shares
+
+	if shares_after_sale != shares_before_sale-1 {
+		t.Errorf("Shares after sale is not less than shares before sales by 1")
 	}
 
 	body := w.Body.String()
@@ -151,9 +163,9 @@ func TestSellStock_NotOwned(t *testing.T) {
 
 	SellStock(w, r)
 
-	// check the response
-	if status := w.Code; status == http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v\n want %v\n", status, http.StatusBadRequest)
+	// check the response (406)
+	if status := w.Code; status != http.StatusNotAcceptable {
+		t.Errorf("handler returned wrong status code: got %v\n want %v\n", status, http.StatusNotAcceptable)
 	}
 }
 
@@ -181,16 +193,8 @@ func TestSellMoreStockThanOwned(t *testing.T) {
 	SellStock(w, r)
 
 	// check the response
-	if status := w.Code; status == http.StatusOK {
-		t.Errorf("handler returned wrong status code: got %v\n want %v\n", status, http.StatusBadRequest)
-	}
-
-	// verify no stocks were sold
-	var nofunds_ownership UserStocks
-	if err := DB.Where("username = ?", "nofunds").First(&nofunds_ownership).Error; err != nil {
-		if errors.Is(err, gorm.ErrRecordNotFound) {
-			fmt.Println("Username not found")
-		}
+	if status := w.Code; status != http.StatusRequestTimeout {
+		t.Errorf("handler returned wrong status code: got %v\n want %v\n", status, http.StatusRequestTimeout)
 	}
 }
 
@@ -220,10 +224,12 @@ func TestGetStocksOwned(t *testing.T) {
 	body := w.Body.String()
 
 	//tests if body contains correct parameters. see "expect"
-	expect := `"username":"john","ticker":"MSFT","share":`
-	if !strings.Contains(body, expect) {
-		t.Errorf("Unexpected body returned. got %v; want body to contain: %v", body,
-			expect)
+	expect := []string{`"ticker":"MSFT","shares":`, `"price":`, `"change":`}
+	for _, str := range expect {
+		if !strings.Contains(body, str) {
+			t.Errorf("Unexpected body returned. got %v; want body to contain: %v", body,
+				str)
+		}
 	}
 }
 
