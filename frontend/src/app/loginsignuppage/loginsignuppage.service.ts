@@ -37,12 +37,6 @@ export class LoginSignUpService {
     return this.client.get("/credentials/authorize", {withCredentials: true}).toPromise()
   }
 
-  async getFunds(): Promise<any> {
-    const user = await this.claimData();
-    const username = user.username;
-    return this.client.post("/credentials/funds", { username }, { withCredentials: true }).toPromise();
-  }
-
   async logout(): Promise<void> {
     await this.client.get("/credentials/logout",{ withCredentials: true }).toPromise()
   }

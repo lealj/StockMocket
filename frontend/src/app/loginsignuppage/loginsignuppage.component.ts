@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { LoginSignUpService } from "./loginsignuppage.service"
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CookieServices } from "../cookie.service";
 import {catchError} from "rxjs";
 
@@ -28,7 +28,7 @@ export class LoginsignuppageComponent implements OnInit
   //loginForm: FormGroup;
 
 
-  constructor(private accountInfo: LoginSignUpService, private Routing: Router) {
+  constructor(private accountInfo: LoginSignUpService, private Routing: Router, private route: ActivatedRoute) {
     this.checkAuthorization();
   }
   checkAuthorization() {
@@ -65,9 +65,15 @@ export class LoginsignuppageComponent implements OnInit
         {
           console.log("Correct Credentials")
           this.loginMessageToPrint = '';
+
+          // reload page so that user funds appear since user is logged in
+        this.Routing.navigate(['.'], { relativeTo: this.route }).then(() => {
+          location.reload();
+        });
           //here is where we will route to the next page because we determine that the login attempt was successful (status of POST 200)!!
           this.Routing.navigate(['/charts']); //send it to the /charts that Freddy set up (which will be the main page)
         }
+        
         /*
         else if (response.status === 401)
         {

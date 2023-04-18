@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
+import { Router, ActivatedRoute } from '@angular/router';
 import { CookieServices } from "../cookie.service";
 import {catchError} from "rxjs";
 import { LogOutPageService } from './log-out-page.service'
+
 
 @Component({
   selector: 'app-log-out-page',
@@ -24,7 +25,7 @@ export class LogOutPageComponent implements OnInit
   public response: any;
 
 
-  constructor(private accountInfo: LogOutPageService, private Routing: Router) {
+  constructor(private accountInfo: LogOutPageService, private Routing: Router, private route: ActivatedRoute) {
     this.checkAuthorization();
   }
 
@@ -95,7 +96,11 @@ export class LogOutPageComponent implements OnInit
         this.logOutMessageToPrint = "Logged Out Successfully!";
         //added to make the input boxes blank after a delete attempt with valid input
         //this.usernameD = '';
-
+         
+        // reload page so that user funds disappaer since user is not logged in
+          this.Routing.navigate(['.'], { relativeTo: this.route }).then(() => {
+            location.reload();
+          });
         this.Routing.navigate(['/account']);
       //}
       

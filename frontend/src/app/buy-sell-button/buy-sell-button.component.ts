@@ -1,9 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ShareService } from '../share.service';
-import { error } from 'cypress/types/jquery';
 import { LoginSignUpService } from '../loginsignuppage/loginsignuppage.service'
-import { HttpStatusCode } from '@angular/common/http';
-
+import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-buy-sell-button',
@@ -21,7 +19,9 @@ export class BuySellButtonComponent implements OnInit {
 
   constructor(
     private shareAction: ShareService,
-    private loginSignUpService: LoginSignUpService
+    private loginSignUpService: LoginSignUpService,
+    private router : Router,
+    private route : ActivatedRoute
     ){}
 
   ngOnInit(): void {}
@@ -46,10 +46,14 @@ export class BuySellButtonComponent implements OnInit {
     this.username = userData.username;
     this.shareAction.Buy(this.username, "MSFT", quantity).then((response) => { //make http request and wait for response, upon response send message to user
       if (response.status == 200) {
-        this.errorMessageToPrint = "Shares successfully bought!";
+        this.errorMessageToPrint = "Shares successfully bought! updating funds...";
       }
 
-
+      setTimeout(() => {
+        this.router.navigate(['.'], { relativeTo: this.route }).then(() => {
+          location.reload();
+        });
+      }, 2000); // Delay of 2 seconds to read text
             /*
       Http status meanings in this function:
       400 - Username not found
@@ -95,10 +99,14 @@ export class BuySellButtonComponent implements OnInit {
     this.username = userData.username;
     this.shareAction.Sell(this.username, "MSFT", quantity).then((response) => { //make http request and wait for response, upon response send message to user
       if (response.status == 200) {
-        this.errorMessageToPrint = "Shares successfully sold!";
+        this.errorMessageToPrint = "Shares successfully sold! Updating funds...";
       }
 
-
+      setTimeout(() => {
+            this.router.navigate(['.'], { relativeTo: this.route }).then(() => {
+              location.reload();
+            });
+          }, 2000); // Delay of 2 seconds to read text
           /*
     Http status meanings in this function:
     404 - Username not found
@@ -128,6 +136,7 @@ export class BuySellButtonComponent implements OnInit {
         }
     });
     this.showSellInput = false; 
+    
   }
 
 }

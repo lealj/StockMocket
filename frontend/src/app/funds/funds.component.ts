@@ -1,5 +1,6 @@
 import { LoginSignUpService } from '../loginsignuppage/loginsignuppage.service'
-import { Component, OnInit,  ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { FundsService } from '../funds.service';
 
 @Component({
   selector: 'app-funds',
@@ -13,20 +14,20 @@ export class FundsComponent implements OnInit {
 
   constructor (
     private loginSignUpService: LoginSignUpService,
-    private changeDetectorRef: ChangeDetectorRef
+    private fundsService : FundsService
   ) {}
 
   ngOnInit(): void {
     this.showFunds = false;
-      this.getUserFunds();
+    this.getUserFunds();
   }
 
   async getUserFunds() { //it will be better to make a service to deal with updating the funds whenever buy/sell/logout happens. funds onyl updates when page is refreshed
-    const response = await this.loginSignUpService.getFunds();
+    const response = await this.fundsService.getFunds();
     console.log(response);
     this.showFunds = true;
     this.fundsText = response;
-    this.changeDetectorRef.detectChanges();
   }
+
   
 }
