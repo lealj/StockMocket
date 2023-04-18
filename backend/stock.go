@@ -30,12 +30,11 @@ type Query struct {
 	EndYear    int    `json:"end_year"`
 }
 
-/*
-func CreateDefaultStocks(writer http.ResponseWriter, rout *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
-
+func GetStockPrice(ticker string) float64 {
+	var price float64
+	DB.Table("stocks").Where("ticker = ?", ticker).Select("price").Scan(&price)
+	return price
 }
-*/
 
 func GetStocks(writer http.ResponseWriter, rout *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")

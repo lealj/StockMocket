@@ -5,6 +5,23 @@ import { CookieServices } from "../cookie.service";
 import {catchError} from "rxjs";
 import { PortfolioPageService } from './portfolio-page.service'
 
+interface Stock 
+{
+  ticker: string;
+  shares: number;
+  price: number;
+  change: number;
+}
+
+interface Log
+{
+  Date: Date;
+  ticker: string;
+  shares: number;
+  ordertype: string;
+  price: number;
+}
+
 @Component({
   selector: 'app-portfolio-page',
   templateUrl: './portfolio-page.component.html',
@@ -12,16 +29,50 @@ import { PortfolioPageService } from './portfolio-page.service'
   providers: [PortfolioPageService]
 })
 
-
 export class PortfolioPageComponent implements OnInit{
   public response: any;
   public portfolioValue: any;
   public portfolioChange: any;
+  public stocksOwned: Stock[] = []
+  public logs: Log[] = []
 
   constructor(private portfolioPageService: PortfolioPageService) {}
 
   ngOnInit(): void {
     this.GetPortfolioValue()
+    this.GetOwnedStocks()
+    this.GetUserLogs()
+  }
+
+  GetOwnedStocks() {
+    this.portfolioPageService.getOwnedStocks().then((response) => {
+      this.stocksOwned = response.body; 
+    })
+    .catch((error) => {
+        if(error.error === null)
+        {
+          console.log("error")
+        } else {
+          console.log("error")
+        }
+      }
+    );
+  }
+
+  GetUserLogs()
+  {
+    this.portfolioPageService.getUserLogs().then((response) => {
+      this.logs = response.body;
+    })
+    .catch((error) => {
+        if(error.error === null)
+        {
+          
+        } else {
+          
+        }
+      }
+    );
   }
 
   GetPortfolioValue()
@@ -41,4 +92,7 @@ export class PortfolioPageComponent implements OnInit{
       }
     );
   }
+
 }
+
+

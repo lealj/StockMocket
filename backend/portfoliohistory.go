@@ -79,7 +79,7 @@ func GetUserPortfolioInfo(writer http.ResponseWriter, router *http.Request) {
 // Gets value of portfolio based on stock price * shares owned + funds
 func GetUserPortfolioValue(username string) float64 {
 	// get user's stocks
-	user_stocks := GetUserStocksObject(username)
+	user_stocks := GetUserStocksArray(username)
 
 	// goes through stocks the user owns, multiplies their price by shares, sums.
 	pv := 0.00
@@ -97,19 +97,11 @@ func GetUserPortfolioValue(username string) float64 {
 	return pv
 }
 
-/*
-func GatherStocksChangeData(writer http.ResponseWriter, router *http.Request) {
-	writer.Header().Set("Content-Type", "application/json")
-	// use below function
-}
-
-
 // Gets the difference between the avg purchase price * shares and current purchase price * shares
-
-func GetIndividualStockChange(user_stock UserStocks) float64 {
+func GetIndividualStockChange(username string, ticker string, shares int) float64 {
 	// get logs corresponding to the user and the ticker.
 	var logs []PortfolioHistory
-	DB.Where("username = ?", user_stock.Username).Where("ticker = ?", user_stock.Ticker).Find(&logs)
+	DB.Where("username = ?", username).Where("ticker = ?", ticker).Find(&logs)
 
 	// get sum of purchases
 	var total_cost float64
@@ -122,20 +114,14 @@ func GetIndividualStockChange(user_stock UserStocks) float64 {
 	}
 	// calculate avg cost per share
 	avg_share_price := total_cost / float64(total_shares_bought)
-	avg_cost_total := avg_share_price * float64(user_stock.Shares)
+	avg_cost_total := avg_share_price * float64(shares)
 
 	// current value of the users stocks (current price * shares)
 	var current_value float64
-	DB.Table("stocks").Where("ticker = ?", user_stock.Ticker).Select("price").Scan(&current_value)
-	current_value = current_value * float64(user_stock.Shares)
+	DB.Table("stocks").Where("ticker = ?", ticker).Select("price").Scan(&current_value)
+	current_value = current_value * float64(shares)
 
 	// calculate change (new - old)/old
-	return (current_value - avg_cost_total) / avg_cost_total
-}
-*/
-
-func GetUserStocksObject(username string) []UserStocks {
-	var user_stocks []UserStocks
-	DB.Where("username = ?", username).Find(&user_stocks)
-	return user_stocks
+	change_percent := ((current_value - avg_cost_total) / avg_cost_total) * 100
+	return change_percent
 }

@@ -3,7 +3,6 @@ package main
 import (
 	"encoding/json"
 	"fmt"
-	"log"
 	"net/http"
 	"time"
 
@@ -200,14 +199,38 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 	json.NewEncoder(writer).Encode(stocksOwned)
 }
 
+type StockTickerShares struct {
+	Ticker string  `json:"ticker"`
+	Shares int     `json:"shares"`
+	Price  float64 `json:"price"`
+	Change float64 `json:"change"` //a percent
+}
+
+// this returns slices of information in the format of the above struct
 func GetStocksOwned(writer http.ResponseWriter, router *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
+	// username
 	var userstock UserStocks
 	json.NewDecoder(router.Body).Decode(&userstock)
+
+	user_stocks := GetUserStocksArray(userstock.Username)
+
+	// create empty slice and populate with info from user_stocks
+	stocks := make([]StockTickerShares, 0)
+	for _, s := range user_stocks {
+		price := GetStockPrice(s.Ticker)
+		change := GetIndividualStockChange(s.Username, s.Ticker, s.Shares)
+		stock := StockTickerShares{Ticker: s.Ticker, Shares: s.Shares, Price: price, Change: change}
+		stocks = append(stocks, stock)
+	}
+
+	json.NewEncoder(writer).Encode(stocks)
+}
+
+func GetUserStocksArray(username string) []UserStocks {
 	var user_stocks []UserStocks
-	DB.Where("username = ?", userstock.Username).Find(&user_stocks)
-	// this can be returned in a better format, or it can be parsed in front end.
-	json.NewEncoder(writer).Encode(user_stocks)
+	DB.Where("username = ?", username).Find(&user_stocks)
+	return user_stocks
 }
 
 func ResetAccount(writer http.ResponseWriter, router *http.Request) {
@@ -216,7 +239,7 @@ func ResetAccount(writer http.ResponseWriter, router *http.Request) {
 	// get credentials
 	var creds Credentials
 	json.NewDecoder(router.Body).Decode(&creds)
-	log.Printf("Username to reset: %s", creds.Username)
+	//log.Printf("Username to reset: %s", creds.Username)
 
 	// reset funds to default value
 	err2 := DB.Where("username = ?", creds.Username).First(&creds).Error

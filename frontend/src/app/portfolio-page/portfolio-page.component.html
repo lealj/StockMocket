@@ -11,7 +11,7 @@
 
       /* Style for the button container */
       #button-container {
-        width: 80%;
+        width: 50%;
         height: 100%;
         background-color: #f0f0f0;
         padding: 20px;
@@ -22,36 +22,114 @@
         display: block;
         margin-bottom: 2px;
         font-size: 16px;
-        padding: 20px;
+        padding-left: 20px;
+        padding-right: 20px;
+        padding-top: 20px;
+        padding-bottom: 20px;
         background-color: #ddd;
         border: none;
         border-radius: 5px;
         cursor: pointer;
+        width: 310%;
+        text-align: left;
       }
 
       /* Style for the text container */
       #text-container {
-        width: 70%;
+        width: 50%;
         height: 100%;
         padding: 20px;
+      }
+
+      /* Style for the table */
+      table {
+        border-collapse: collapse;
+        width: 100%;
+      }
+
+      /* Style for table headers */
+      th {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+        background-color: #f2f2f2;
+      }
+
+      /* Style for table cells */
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
       }
     </style>
   </head>
   <body>
-    <h1>Button List and Text Example</h1>
+    <h1>Stocks Owned</h1>
     <div class="container">
       <div id="button-container">
-        <button>Button 1</button>
-        <button>Button 2</button>
-        <button>Button 3</button>
-        <button>Button 4</button>
-        <button>Button 5</button>
+        <table>
+          <thead>
+            <tr>
+              <th>Ticker</th>
+              <th>Price</th>
+              <th>Change</th>
+              <th>Shares</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stock of stocksOwned">
+              <td>
+                <button data-cy="stockButton">
+                  {{ stock.ticker }}
+                </button>
+              </td>
+              <td>
+                ${{ stock.price.toFixed(2)}}
+              </td>
+              <td>
+                {{ stock.change >= 0 ? '+' : ''}}{{ stock.change.toFixed(2) }}%
+              </td>
+              <td>
+                  {{ stock.shares }}
+              </td>
+            </tr>
+          </tbody>
+        </table>
       </div>
       <div id="text-container">
         <h1>Portfolio Value: {{ portfolioValue?.toFixed(2) }}</h1>
-        <h2 [ngStyle]="{'color': portfolioChange >= 0 ? 'green' : 'red'}">Overall Change: {{ portfolioChange?.toFixed(2) }}%</h2>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit.</p>
+        <h2 [ngStyle]="{'color': portfolioChange >= 0 ? 'mediumseagreen' : 'red'}">
+          Overall Change: {{ portfolioChange != null ? (portfolioChange >= 0 ? '+' : '') + portfolioChange.toFixed(2) : 'N/A' }}%
+        </h2>
       </div>
     </div>
+    <h1>History</h1>
+      <table>
+        <thead>
+          <tr>
+            <th>Ticker</th>
+            <th>Shares</th>
+            <th>Order Type</th>
+            <th>Order Value</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let log of logs">
+            <td>
+              {{log.ticker}}
+            </td>
+            <td>
+              {{log.shares}}
+            </td>
+            <td>
+              {{log.ordertype}}
+            </td>
+            <td>
+              ${{log.price}}
+            </td>
+          </tr>
+        </tbody>
+      </table>
   </body>
 </html>
+

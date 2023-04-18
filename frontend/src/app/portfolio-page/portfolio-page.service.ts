@@ -19,7 +19,22 @@ export class PortfolioPageService {
         const userData = await this.loginSignUpService.claimData()
         const username = userData.username
         const accntInfo = { username: username}
-        // backend recieves the username, so problem likely not here
         return this.client.post("/portfoliovalue", accntInfo, {observe: 'response'}).toPromise();
+    }
+
+    async getOwnedStocks(): Promise<any>
+    {
+        const userData = await this.loginSignUpService.claimData()
+        const username = userData.username
+        const accntInfo = { username: username}
+        return this.client.post("/userstock/owned", accntInfo, {observe: 'response'}).toPromise();
+    }
+
+    async getUserLogs(): Promise<any>
+    {
+        const userData = await this.loginSignUpService.claimData()
+        const username = userData.username
+        const accntInfo = { username: username}
+        return this.client.post("/portfoliohistory", accntInfo, {observe: 'response'}).toPromise();
     }
 }

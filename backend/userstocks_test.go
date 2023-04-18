@@ -27,7 +27,7 @@ func TestPurchaseStock(t *testing.T) {
 	DB.Where("username = ?", "john").First(&cred)
 	fmt.Printf("Funds before purchase: %f", cred.Funds)
 
-	r := httptest.NewRequest("POST", "/userstock/buy/john", strings.NewReader(testPurchase))
+	r := httptest.NewRequest("POST", "/userstock/buy", strings.NewReader(testPurchase))
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -65,7 +65,7 @@ func TestPurchaseStock_NoFunds(t *testing.T) {
 	DB.Where("username = ?", "nofunds").First(&cred)
 	fmt.Printf("Funds before purchase: %f", cred.Funds)
 
-	r := httptest.NewRequest("POST", "/userstock/buy/nofunds", strings.NewReader(testPurchase))
+	r := httptest.NewRequest("POST", "/userstock/buy", strings.NewReader(testPurchase))
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -106,7 +106,7 @@ func TestSellStock(t *testing.T) {
 	fmt.Printf("Funds before purchase: %f", cred.Funds)
 
 	// set reader and writer
-	r := httptest.NewRequest("POST", "/userstock/sell/john", strings.NewReader(testSale))
+	r := httptest.NewRequest("POST", "/userstock/sell", strings.NewReader(testSale))
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -145,7 +145,7 @@ func TestSellStock_NotOwned(t *testing.T) {
 	fmt.Printf("Funds before purchase: %f", cred.Funds)
 
 	// set reader and writer
-	r := httptest.NewRequest("POST", "/userstock/sell/nofunds", strings.NewReader(testSale))
+	r := httptest.NewRequest("POST", "/userstock/sell", strings.NewReader(testSale))
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -174,7 +174,7 @@ func TestSellMoreStockThanOwned(t *testing.T) {
 	fmt.Printf("Funds before purchase: %f", cred.Funds)
 
 	// set reader and writer
-	r := httptest.NewRequest("POST", "/userstock/sell/eric", strings.NewReader(testSale))
+	r := httptest.NewRequest("POST", "/userstock/sell", strings.NewReader(testSale))
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -206,7 +206,7 @@ func TestGetStocksOwned(t *testing.T) {
 
 	testuser := `{"username":"john"}`
 
-	r := httptest.NewRequest("GET", "/userstock/john", strings.NewReader(testuser))
+	r := httptest.NewRequest("GET", "/userstock", strings.NewReader(testuser))
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
@@ -248,7 +248,7 @@ func TestResetAccount(t *testing.T) {
 	}
 
 	// send router and writer
-	r := httptest.NewRequest("POST", "/userstock/reset/john", strings.NewReader(testuser))
+	r := httptest.NewRequest("POST", "/userstock/reset", strings.NewReader(testuser))
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 

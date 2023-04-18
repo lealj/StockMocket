@@ -73,7 +73,7 @@ func TestGetStock(t *testing.T) {
 	testStock := `{"ticker":"MSFT"}`
 
 	// create a request with the mock database
-	r := httptest.NewRequest("POST", "/stocks/MSFT", strings.NewReader(testStock))
+	r := httptest.NewRequest("POST", "/stocks", strings.NewReader(testStock))
 	r.Header.Set("Content-Type", "application/json")
 	w := httptest.NewRecorder()
 
