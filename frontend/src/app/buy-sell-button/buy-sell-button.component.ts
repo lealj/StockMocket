@@ -49,11 +49,15 @@ export class BuySellButtonComponent implements OnInit {
         this.errorMessageToPrint = "Shares successfully bought! updating funds...";
       }
 
-      setTimeout(() => {
+
+      //to update the funds text every time the funds change the page is reloaded
+      setTimeout(() => { 
         this.router.navigate(['.'], { relativeTo: this.route }).then(() => {
           location.reload();
         });
       }, 2000); // Delay of 2 seconds to read text
+
+      
             /*
       Http status meanings in this function:
       400 - Username not found
