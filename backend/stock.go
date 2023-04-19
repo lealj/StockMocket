@@ -66,8 +66,6 @@ func UpdateStocks() {
 
 		p := q.RegularMarketPrice
 
-		//fmt.Printf("%f, %s\n", p, ticker)
-
 		var stock Stock
 		DB.Where("ticker = ?", ticker).First(&stock)
 		stock.Price = p

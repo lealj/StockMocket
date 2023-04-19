@@ -5,8 +5,9 @@ Sprint 3
 # Work Completed
 ## Front-end
 
+Populated the portfolio page to show stocks owned by the user and relevent info regarding the stock. Displayed portfolio-value and change-in-portfolio-value and a history of the user's purchases and sales on the page as well. 
 ## Back-end
-
+Implemented a reset-account feature for the user, removing their ownership of any stocks and resetting their funds amount to $1000. Stocks' prices are now updated when the program is run to ensure users view accurate prices. Created a portfolio-history file to keep records of users' purchases and sales, so a user can view this information through the website. The file also contains functions that calculate a user's portfolio value, portfolio-value change, and their gain/loss percent on each of their owned stocks, allowing the user to analyze their portfolio status. 
 
 # Unit Tests
 ## Front-end

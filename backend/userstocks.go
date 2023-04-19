@@ -105,9 +105,9 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	credentials.CreatedAt = createdAt
 	DB.Save(&credentials)
 
+	// Repopulate a userstocks object to make sure it was recorded, and to send in JSON
 	var ret UserStocks
-	DB.Where("username = ?", newPurchaseOrder.Username).First(&ret)
-
+	DB.Where("username = ? AND ticker = ?", newPurchaseOrder.Username, newPurchaseOrder.Ticker).Last(ret)
 	json.NewEncoder(writer).Encode(ret)
 }
 
