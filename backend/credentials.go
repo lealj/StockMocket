@@ -78,9 +78,9 @@ func login(writer http.ResponseWriter, router *http.Request) {
 		Expires:  time.Now().Add(24 * time.Hour),
 	})
 
-	log.Printf(token)
+	//log.Printf(token)
 	writer.WriteHeader(http.StatusOK)
-	log.Printf("The passwords matched, the status code should be 200\n")
+	//log.Printf("The passwords matched, the status code should be 200\n")
 
 }
 
@@ -157,6 +157,9 @@ func deleteCredentials(writer http.ResponseWriter, router *http.Request) {
 
 }
 
+// Logout might have to get changed to be path protected. There is no reason for someone to attempt to log out if they are not
+// even logged in the first place. This requires changes to the main.go file to make this go through the JWTHandler.
+// Should be discussed first.
 func logout(w http.ResponseWriter, r *http.Request) {
 	// deletes cookies from local browser storage
 	http.SetCookie(w, &http.Cookie{

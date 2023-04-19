@@ -40,7 +40,7 @@ func JWTPathProtection(next http.Handler) http.Handler {
 
 		w.WriteHeader(http.StatusOK)
 
-		// Call the next handler in the chain
+		// Call the next handler after token is verified
 		next.ServeHTTP(w, r)
 	})
 }
@@ -68,6 +68,7 @@ func getClaimsHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	// We set the status code as good and then return all the valid information.
 	w.WriteHeader(http.StatusOK)
 	w.Header().Set("Content-Type", "application/json")
 	err = json.NewEncoder(w).Encode(claims)

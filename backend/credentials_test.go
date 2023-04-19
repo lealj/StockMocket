@@ -16,11 +16,16 @@ func TestLogin(t *testing.T) {
 
 	request := httptest.NewRequest("POST", "/credentials/login", strings.NewReader(testLoginCreds))
 	request.Header.Set("Content-Type", "application/json")
-	writer := httptest.NewRecorder()
+	tempWriter := httptest.NewRecorder()
+
+	sRequest := httptest.NewRequest("POST", "/credentials/signup", strings.NewReader(testLoginCreds))
+	signup(tempWriter, sRequest)
 
 	if err != nil {
 		t.Fatal(err)
 	}
+
+	writer := httptest.NewRecorder()
 	login(writer, request)
 
 	if status := writer.Code; status != http.StatusOK {
@@ -89,18 +94,21 @@ func TestSignupFail(t *testing.T) {
 
 	request := httptest.NewRequest("POST", "/credentials/signup", strings.NewReader(testLoginCreds))
 	request.Header.Set("Content-Type", "application/json")
-	writer := httptest.NewRecorder()
+	tempWriter := httptest.NewRecorder()
 
 	if err != nil {
 		t.Fatal(err)
 	}
 
-	signup(writer, request)
+	signup(tempWriter, request)
+
+	newRequest := httptest.NewRequest("POST", "/credentials/signup", strings.NewReader(testLoginCreds))
+	writer := httptest.NewRecorder()
+	signup(writer, newRequest)
 
 	if status := writer.Code; status != http.StatusUnauthorized {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusUnauthorized)
 	}
-
 }
 
 func TestDelete(t *testing.T) {
@@ -153,5 +161,56 @@ func TestDeleteFail(t *testing.T) {
 
 	if status := deleteWriter.Code; status != http.StatusConflict {
 		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusConflict)
+	}
+}
+
+func TestLogout(t *testing.T) {
+	InitialMigration()
+
+	testLoginCreds := `{
+		"Username": "test",
+		"Password": "test" }`
+
+	request := httptest.NewRequest("POST", "/credentials/login", strings.NewReader(testLoginCreds))
+	request.Header.Set("Content-Type", "application/json")
+	tempWriter := httptest.NewRecorder()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+
+	sRequest := httptest.NewRequest("POST", "/credentials/signup", strings.NewReader(testLoginCreds))
+	signup(tempWriter, sRequest)
+	login(tempWriter, request)
+
+	outRequest := httptest.NewRequest("GET", "/credentials/logout", strings.NewReader(testLoginCreds))
+	request.Header.Set("Content-Type", "application/json")
+	writer := httptest.NewRecorder()
+	logout(writer, outRequest)
+
+	if status := writer.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
+	}
+}
+
+func TestGetUserFunds(t *testing.T) {
+	InitialMigration()
+
+	testLoginCreds := `{
+		"Username": "test",
+		"Password": "test" }`
+
+	request := httptest.NewRequest("POST", "/credentials/funds", strings.NewReader(testLoginCreds))
+	request.Header.Set("Content-Type", "application/json")
+	writer := httptest.NewRecorder()
+
+	if err != nil {
+		t.Fatal(err)
+	}
+	login(writer, request)
+	GetUserFunds(writer, request)
+
+	if status := writer.Code; status != http.StatusOK {
+		t.Errorf("handler returned wrong status code: got %v want %v", status, http.StatusOK)
 	}
 }

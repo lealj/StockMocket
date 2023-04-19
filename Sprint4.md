@@ -18,6 +18,13 @@ In addition to the login tests, chart tests were also created to purchase and se
 ## Back-end
 Implemented a reset-account feature for the user, removing their ownership of any stocks and resetting their funds amount to $1000. Stocks' prices are now updated when the program is run to ensure users view accurate prices. Created a portfolio-history file to keep records of users' purchases and sales, so a user can view this information through the website. The file also contains functions that calculate a user's portfolio value, portfolio-value change, and their gain/loss percent on each of their owned stocks, allowing the user to analyze their portfolio status. 
 
+There was the addition of JWT tokens to maintain the user logged in. This includes the addition of JWT path protection
+middleware that verifies a token string by decoding it. The token values are stored in HTTP Only secure cookies to lower
+the chances of XSS attacks. In order to verify, the token must be generated so there is a generateToken that uses HS256
+to encrypt the username of the user with other custom claims. In order for these claims to be retrievable backend had to
+create an extract claims function that will decode the token string and return claims that contain username, expiration 
+date, issuer and role. These can be modified at anytime to include actually unique JWT identifiers.
+
 # Unit Tests
 ## Front-end
 - Testing delete button on a username that does NOT exist in the database
@@ -70,12 +77,30 @@ Component test for buy and sell button: shows input box when buy button is press
     - tests the deleteCredentials by requesting to delete a newly created account within delete. If signup passes, then there should be no issue.
 - ### TestDeleteCredentialsFail()
     - tests deleteCredentials and expects a failed status since the test tries to delete an account with random typed letters, it should not be in the database.
+- ### TestLogout()
+  - test if logging out works. Should return a 200 status code if logged out successfully.
+- ### TestSignup()
+  - tests the success of a user attempting to sign up.
+- ### TestSignupFail()
+  - tests if the signup failed.
 
 ### portfoliohistory_test.go
 - ### TestGetLogs()
     - tests the retrieval of logs or records of a user's purchases and sales.
 - ### TestGetUserPortfolioInfo()
     - tests the retrieval of a user's portfolio value and change in portfolio value. 
+
+### JWTAuthentication_test.go
+- ### TestExtractClaims()
+  - tests to see if claims can be retrieved from http only cookies
+- ### TestGetClaimsHandler()
+  - tests if extract claims can be accessed through the front end.
+- ### TestJWTPathProtection()
+  - tests to see if path protection works by successfully deleting the account since deletion is path protected to only 
+  - logged in users.
+- ### TestJWTPathProtectionFail()
+  - tests for a failed case of JWTPathProtection. Not that it can be accessed without credentials but rather preventing access.
+
 # Back-end API Documentation
 
 ## main.go
@@ -112,7 +137,24 @@ If the username is taken, then the code will return a 401 for unauthorized.
 #### deleteCredentials()
 - This will check if the username give is in the database, if it is, it will delete and return a 200 code. If the username
 is not in the database, then the code returned is 409.
+#### logout()
+- This will delete the value of the HTTP only cookie so the user can no longer log in without entering credentials.
+#### GetUserFunds()
+- This returns the value of the amount of money that the current account has. This function is path protected and can 
+- only be accessed if the user is logged in.
 
+## JWTAuthentication.go
+#### type MyClaims
+- This is a custom claims struct that has a username and role. It also initializes with standard jwt claims.
+#### JWTPathProtection()
+- This is middleware function that can be used to verify user tokens and credentials to ensure the session are valid.
+#### getClaimsHandler()
+- This is a function that can be called from the front end to retrieve claims. Claims can be used to establish the user
+#### generateToken()
+- When a user first logs in, a token is generated so they can continue viewing the rest of the site as the same user.
+#### extractClaims()
+- This is function that works with getClaimsHandler. The claims can be obtained from the backend just using this function.
+- It needs a cookie.value or the token string to decrypt it.
 
 ## stock.go
 ### Types
