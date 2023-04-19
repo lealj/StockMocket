@@ -1,14 +1,18 @@
 # Stock-Mocket
 
-Sprint 3
+Sprint 4
 ### video link: x
 # Work Completed
 ## Front-end
 
 Populated the portfolio page to show stocks owned by the user and relevent info regarding the stock. Displayed portfolio-value and change-in-portfolio-value and a history of the user's purchases and sales on the page as well. 
+
 For Sprint 4, the front end team worked on the issues outlined on GitHub. One such issue was creating an “About us” page where there is information about the members of both teams. Another issue we worked on was creating a homepage that provided information about how to get started with the website, such as how to login, where to buy stocks, and how to view the aforementioned about us page.
+
 Another issue the front end team worked on was creating a logout page (/logout) that would allow the user to log out of their account. We made the “Account” button in the top right corner route the user to the logout page when it was pressed and the user was already logged into their account. If the user is not currently logged into an account, the button routes you to the login page (/account) that was set up in the previous sprints. When routed to this page, the user has the option to logout by pressing the button on the webpage (which turns red when the mouse hovers over as a warning). Another option on this page is to reset your account by also selecting the button listed under the “Reset Account” section. Additionally, the “Delete User” option was moved to this page because the team felt it would be more appropriate for it to be in a section where a logged in user had access to the option. The format was updated where the text and button are red to deter the user from utilizing this functionality unless they truly wanted to. 
+
 Additionally, the front end team utilized cypress end 2 end tests to test the functionality of the issues implemented. Initially, the tests created in the previous sprints were updated to match the new layout of the page, such as routing to the logout page to delete an account. One such test implemented was logging out of the account where it visits the logout page (/logout) after signing in on the login page (/account), and pressing the button, effectively logging the user out of the account.
+
 In addition to the login tests, chart tests were also created to purchase and sell stocks. The first test simply created and logged into an account before visiting the chart page (/charts) where it pressed the buy button and purchased 2 stocks. This is successful since the user starts off with 1000 dollars and the current stock costs less than that amount. Then, it proceeds to test the sell feature by selling 1 owned stock. It succeeds because we owned 2 (now 1), then it sells another stock which succeeds for the same reason; however, when we try to sell 1 more, it fails because we do not have enough stocks to sell. Then, the following tests simply test the edge cases for the buy and sell features (more than allowed or greater than 50 and an invalid number that is either 0 or negative). These fail and send out an error message that the user needs to input a valid number of stocks. The final tests check the max amount the user is technically allowed to sell, but can’t simply because they don’t have enough money to purchase that many.
 
 ## Back-end
