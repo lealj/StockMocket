@@ -32,7 +32,7 @@ export class MychartComponent implements OnInit {
                   {
                     label: 'MSFT',
                     data: prices,
-                    pointRadius: 2, 
+                    pointRadius: .01, 
                     backgroundColor: [
                       'rgba(0, 255, 0, 1)',
                       'rgba(0, 255, 0, 1)',
