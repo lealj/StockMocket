@@ -1,7 +1,13 @@
 # Stock-Mocket
 
 Sprint 4
-### video link: x
+### video links:
+- Jonathan https://youtu.be/uCezxvRTqmo 
+- Brian https://www.youtube.com/watch?v=MctuFXfPC14
+- Josue https://youtu.be/VQ4ff5IECww
+- Freddy https://youtu.be/vMmd48Def3o
+- See this video and Josue's for backend api overview: https://youtu.be/dB1ebH0wFrM
+
 # Work Completed
 ## Front-end
 

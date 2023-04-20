@@ -233,6 +233,8 @@ func TestGetStocksOwned(t *testing.T) {
 	}
 }
 
+// Test this after portfolio tests
+
 func TestResetAccount(t *testing.T) {
 	mockDB := MockDB_Init()
 	defer func() {

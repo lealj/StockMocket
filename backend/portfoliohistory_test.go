@@ -79,3 +79,5 @@ func TestGetUserPortfolioInfo(t *testing.T) {
 		}
 	}
 }
+
+// Run reset account

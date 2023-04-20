@@ -56,19 +56,47 @@ func UpdateStocks() {
 	fmt.Printf("Updating stocks...\n")
 	// List of tickers in database
 	tickers := []string{"KO", "MSFT", "LMT", "AAPL", "WFC"}
-
+	var price float64
 	for _, ticker := range tickers {
 		q, err := quote.Get(ticker)
 		if err != nil {
-			fmt.Printf("Error getting quote: %v", err)
-			return
+			fmt.Printf("Error getting quote for %s: %v\n", ticker, err)
+			fmt.Printf("Attempting Query instead...\n")
+
+			startmonth := int(time.Now().Month())
+			endmonth := startmonth
+
+			startday := int(time.Now().Day())
+			endday := startday
+
+			startyear := int(time.Now().Year())
+			endyear := startyear
+
+			p := &chart.Params{
+				Symbol:   ticker,
+				Start:    &datetime.Datetime{Month: startmonth, Day: startday, Year: startyear},
+				End:      &datetime.Datetime{Month: endmonth, Day: endday, Year: endyear},
+				Interval: datetime.OneDay,
+			}
+
+			iter := chart.Get(p)
+			// check error
+			if iter.Err() != nil {
+				fmt.Printf("%v\n", iter.Err())
+				return
+			}
+
+			for iter.Next() {
+				close_price_f, _ := iter.Bar().Close.Float64()
+				price = close_price_f
+			}
+
+		} else {
+			price = q.RegularMarketPrice
 		}
-
-		p := q.RegularMarketPrice
-
 		var stock Stock
 		DB.Where("ticker = ?", ticker).First(&stock)
-		stock.Price = p
+		stock.Price = price
 
 		// createdat var created due to error using mock_db. Should only apply if createdat = 0000/null
 		t := time.Now()
