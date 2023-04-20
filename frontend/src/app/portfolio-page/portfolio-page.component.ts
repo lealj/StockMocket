@@ -51,9 +51,9 @@ export class PortfolioPageComponent implements OnInit{
     .catch((error) => {
         if(error.error === null)
         {
-          console.log("error")
+          console.log("null")
         } else {
-          console.log("error")
+          console.log("get owned stocks failed")
         }
       }
     );
@@ -67,9 +67,9 @@ export class PortfolioPageComponent implements OnInit{
     .catch((error) => {
         if(error.error === null)
         {
-          
+          console.log("null")
         } else {
-          
+          console.log("get user logs failed")
         }
       }
     );
@@ -85,7 +85,7 @@ export class PortfolioPageComponent implements OnInit{
     .catch((error) => {
         if(error.error === null)
         {
-          console.log("Display pv faileddf")
+          console.log("null")
         } else {
           console.log("Display pv failed")
         }

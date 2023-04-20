@@ -106,7 +106,7 @@ func TestSetStockZero(t *testing.T) {
 	//overwrite db variable in user.go
 	DB = mockDB
 
-	// Set prices of stocks to wrong values
+	// Set prices of stocks to wrong value
 	for id := 1; id <= 5; id++ {
 		var tstock Stock
 		DB.First(&tstock, id)
