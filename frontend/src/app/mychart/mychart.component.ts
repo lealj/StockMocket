@@ -32,21 +32,22 @@ export class MychartComponent implements OnInit {
                   {
                     label: 'MSFT',
                     data: prices,
+                    pointRadius: 2, 
                     backgroundColor: [
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)'
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)'
                     ],
                     borderColor: [
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)',
-                      'rgba(255, 0, 0, 1)'
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)',
+                      'rgba(0, 255, 0, 1)'
                     ],
                     borderWidth: 1
                   }
@@ -55,7 +56,8 @@ export class MychartComponent implements OnInit {
               options: {
                 scales: {
                   y: {
-                    beginAtZero: true
+                    beginAtZero: false,
+                    min: 200
                   }
                 }
               }
