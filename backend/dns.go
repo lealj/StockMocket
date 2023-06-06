@@ -11,7 +11,7 @@ var DB *gorm.DB //database variable
 var err error
 
 // AWS db connection
-const DNS = "admin:stocksmocks@tcp(stockmock-db.cwhbq98kjirp.us-east-1.rds.amazonaws.com:3306)/godb?charset=utf8&parseTime=True&loc=Local"
+const DNS = "sql9624027:WHUUJxfxAJ@tcp(sql9.freemysqlhosting.net:3306)/sql9624027?charset=utf8&parseTime=True&loc=Local"
 
 // local db connection -(fill in password and remove "<>", create "godb" schema in your database)
 //const DNS = "root:<password>@tcp(localhost:3306)/godb?charset=utf8&parseTime=True&loc=Local"
