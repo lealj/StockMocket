@@ -98,8 +98,11 @@
       </div>
       <div id="text-container">
         <h1>Portfolio Value: ${{ portfolioValue?.toFixed(2) }}</h1>
-        <h2 [ngStyle]="{'color': portfolioChange >= 0 ? 'mediumseagreen' : 'red'}">
-          Overall Change: {{ portfolioChange != null ? (portfolioChange >= 0 ? '+' : '') + portfolioChange.toFixed(2) : 'N/A' }}%
+        <h2>
+          Overall Change:
+          <span [ngStyle]="{'color': portfolioChange >= 0 ? 'mediumseagreen' : 'red'}">
+            {{ portfolioChange != null ? (portfolioChange >= 0 ? '+' : '') + portfolioChange.toFixed(2) : 'N/A' }}%
+          </span>
         </h2>
       </div>
     </div>
@@ -132,4 +135,3 @@
       </table>
   </body>
 </html>
-

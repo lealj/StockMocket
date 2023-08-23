@@ -1,5 +1,10 @@
-<div id="divChart">
+<!DOCTYPE html>
+<html>
+<body>
+  <h1 class="rolling-number">{{ ticker }} ${{ content | number:'1.2-2'}}</h1>
+  <div id="divChart">
     <canvas id="myChart"></canvas>
     <app-buy-sell-button></app-buy-sell-button>
-</div>
-
+  </div>
+</body>
+</html>

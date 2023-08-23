@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Subject } from 'rxjs';
-import { LoginSignUpService } from './loginsignuppage/loginsignuppage.service';
+import { Subject, firstValueFrom } from 'rxjs';
+import { LoginSignUpService } from '../loginsignuppage/loginsignuppage.service';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 
 
@@ -18,6 +18,7 @@ export class FundsService {
   async getFunds(): Promise<any> {
     const user = await this.loginSignUpService.claimData();
     const username = user.username;
-    return this.client.post("/credentials/funds", { username }, { withCredentials: true }).toPromise();
+    console.log("HELLO")
+    return firstValueFrom(this.client.post("/credentials/funds", { username }, { withCredentials: true }));
   }
 }

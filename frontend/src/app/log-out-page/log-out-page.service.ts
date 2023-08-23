@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import {Observable, observable} from "rxjs";
+import { firstValueFrom } from "rxjs";
 import { LoginSignUpService } from '../loginsignuppage/loginsignuppage.service'
 
 @Injectable({
@@ -17,16 +17,16 @@ export class LogOutPageService {
   DeleteUNandPW(username: string): Promise<any>
   {
     const acctInfo = { username: username };
-    return this.client.post("/credentials/delete", acctInfo, {observe: 'response'}).toPromise();
+    return firstValueFrom(this.client.post("/credentials/delete", acctInfo, {observe: 'response'}));
   }
 
   verify(): Promise<boolean> {
-    return this.client.get("/credentials/authorize", { withCredentials: true }).toPromise().then(() => true)
+    return firstValueFrom(this.client.get("/credentials/authorize", { withCredentials: true })).then(() => true)
       .catch(() => false);
   }
 
   async logout(): Promise<void> {
-    await this.client.get("/credentials/logout",{ withCredentials: true }).toPromise()
+    await firstValueFrom(this.client.get("/credentials/logout",{ withCredentials: true }));
   }
 
   async resetAccount(): Promise<any>
@@ -34,7 +34,7 @@ export class LogOutPageService {
     const userData = await this.loginSignUpService.claimData()
     const username = userData.username
     const accntInfo = { username: username}
-    return this.client.post("/resetaccount", accntInfo, {observe: 'response'}).toPromise();
+    return firstValueFrom(this.client.post("/resetaccount", accntInfo, {observe: 'response'}));
   }
 
 }

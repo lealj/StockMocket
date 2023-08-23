@@ -15,10 +15,10 @@ type PortfolioHistory struct {
 	Ticker    string  `json:"ticker"`
 	Shares    int     `json:"shares"`
 	OrderType string  `json:"ordertype"` // should be buy, sell, div
-	Value     float64 `json:"price"`
+	Value     float32 `json:"price"`
 }
 
-func CreateLog(ordertype string, order *UserStocks, value float64) {
+func CreateLog(ordertype string, order *UserStocks, value float32) {
 	var log PortfolioHistory
 	log.Username = order.Username
 	log.Ticker = order.Ticker
@@ -52,8 +52,8 @@ func GetLogs(writer http.ResponseWriter, router *http.Request) {
 /* For Portfolio page */
 
 type PortfolioInfo struct {
-	PortfolioValue float64 `json:"portfolio_value"`
-	PVChange       float64 `json:"pv_change"`
+	PortfolioValue float32 `json:"portfolio_value"`
+	PVChange       float32 `json:"pv_change"`
 	// possibly add invidividual stock data pertaining to the user here (in a string)
 	// example: avg cost for x stock, percent change etc. see getindividualstockchange function
 }
@@ -77,20 +77,20 @@ func GetUserPortfolioInfo(writer http.ResponseWriter, router *http.Request) {
 }
 
 // Gets value of portfolio based on stock price * shares owned + funds
-func GetUserPortfolioValue(username string) float64 {
+func GetUserPortfolioValue(username string) float32 {
 	// get user's stocks
 	user_stocks := GetUserStocksArray(username)
 
 	// goes through stocks the user owns, multiplies their price by shares, sums.
-	pv := 0.00
+	pv := float32(0)
 	for i := range user_stocks {
 		var stock Stock
 		DB.Where("ticker = ?", user_stocks[i].Ticker).First(&stock)
-		pv += stock.Price * float64(user_stocks[i].Shares)
+		pv += stock.Price * float32(user_stocks[i].Shares)
 	}
 
 	// gets funds from credentials based on username
-	var funds float64
+	var funds float32
 	DB.Table("credentials").Where("username = ?", username).Select("funds").Scan(&funds)
 	pv += funds
 
@@ -98,13 +98,13 @@ func GetUserPortfolioValue(username string) float64 {
 }
 
 // Gets the difference between the avg purchase price * shares and current purchase price * shares
-func GetIndividualStockChange(username string, ticker string, shares int) float64 {
+func GetIndividualStockChange(username string, ticker string, shares int) float32 {
 	// get logs corresponding to the user and the ticker.
 	var logs []PortfolioHistory
 	DB.Where("username = ?", username).Where("ticker = ?", ticker).Find(&logs)
 
 	// get sum of purchases
-	var total_cost float64
+	var total_cost float32
 	var total_shares_bought int
 	for i := range logs {
 		if logs[i].OrderType == "buy" {
@@ -113,13 +113,13 @@ func GetIndividualStockChange(username string, ticker string, shares int) float6
 		}
 	}
 	// calculate avg cost per share
-	avg_share_price := total_cost / float64(total_shares_bought)
-	avg_cost_total := avg_share_price * float64(shares)
+	avg_share_price := total_cost / float32(total_shares_bought)
+	avg_cost_total := avg_share_price * float32(shares)
 
 	// current value of the users stocks (current price * shares)
-	var current_value float64
+	var current_value float32
 	DB.Table("stocks").Where("ticker = ?", ticker).Select("price").Scan(&current_value)
-	current_value = current_value * float64(shares)
+	current_value = current_value * float32(shares)
 
 	// calculate change (new - old)/old
 	change_percent := ((current_value - avg_cost_total) / avg_cost_total) * 100

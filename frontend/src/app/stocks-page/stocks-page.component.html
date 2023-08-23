@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>My Basic Webpage</title>
+</head>
+<body>
+    <h1>Stocks</h1>
+    <div class="container">
+        <div id="button-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Ticker</th>
+                        <th>Price</th>
+                        <th>Daily Change</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let stock of stocksList">
+                        <button data-cy="stockButton" [routerLink]="['/viewstocks', stock.ticker]">
+                        <td>
+                            {{ stock.ticker }}
+                        </td>
+                        <td>
+                            ${{ stock.price }}
+                        </td>
+                        </button>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
+

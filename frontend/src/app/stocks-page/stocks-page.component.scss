@@ -1,0 +1,61 @@
+// Define variables for reusable values
+$container-background-color: #f0f0f0;
+$button-background-color: #ddd;
+$table-header-background-color: #f2f2f2;
+$table-border-color: #ddd;
+
+// Style for the container
+.container {
+  display: flex;
+  height: 100%;
+
+  // Style for the button container
+  #button-container {
+    width: 50%;
+    height: 100%;
+    background-color: $container-background-color;
+    padding: 20px;
+
+    // Style for each button
+    button {
+      display: block;
+      margin-bottom: 2px;
+      font-size: 16px;
+      padding: 20px;
+      background-color: $button-background-color;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 310%;
+      text-align: left;
+    }
+  }
+
+  // Style for the text container
+  #text-container {
+    width: 50%;
+    height: 100%;
+    padding: 20px;
+
+    // Style for the table
+    table {
+      border-collapse: collapse;
+      width: 100%;
+
+      // Style for table headers
+      th {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid $table-border-color;
+        background-color: $table-header-background-color;
+      }
+
+      // Style for table cells
+      td {
+        padding: 8px;
+        text-align: left;
+        border-bottom: 1px solid $table-border-color;
+      }
+    }
+  }
+}

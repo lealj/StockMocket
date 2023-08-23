@@ -1,11 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
-import { CookieServices } from "../cookie.service";
-import {catchError} from "rxjs";
 import { PortfolioPageService } from './portfolio-page.service'
+import { WebsocketService } from '../services/websocket.service';
 
-interface Stock 
+interface StockTransaction
 {
   ticker: string;
   shares: number;
@@ -26,17 +23,35 @@ interface Log
   selector: 'app-portfolio-page',
   templateUrl: './portfolio-page.component.html',
   styleUrls: ['./portfolio-page.component.scss'],
-  providers: [PortfolioPageService]
+  providers: [PortfolioPageService, WebsocketService]
 })
 
 export class PortfolioPageComponent implements OnInit{
   public response: any;
   public portfolioValue: any;
   public portfolioChange: any;
-  public stocksOwned: Stock[] = []
+  public stocksOwned: StockTransaction[] = []
   public logs: Log[] = []
+  private ogPrice = 0;
 
-  constructor(private portfolioPageService: PortfolioPageService) {}
+  constructor(
+    private portfolioPageService: PortfolioPageService,
+    private WebsocketService: WebsocketService
+  ) 
+  {
+    WebsocketService.messages.subscribe(msg => {
+      let ticker: string = msg.source;
+      let price: number = parseFloat(msg.content);
+      const updatedStock = this.stocksOwned.find(stock => stock.ticker === ticker);
+      if (updatedStock) {
+        if(this.ogPrice === 0) {
+          this.ogPrice = updatedStock.price / (1 + (updatedStock.change/100));
+        }
+        updatedStock.change = ((price - this.ogPrice)/this.ogPrice)*100
+        updatedStock.price = price;
+      }
+    })
+  }
 
   ngOnInit(): void {
     this.GetPortfolioValue()
@@ -80,7 +95,6 @@ export class PortfolioPageComponent implements OnInit{
     this.portfolioPageService.getPortfolioValue().then((response) => {
       this.portfolioValue = response.body.portfolio_value;
       this.portfolioChange = response.body.pv_change;
-      console.log
     })
     .catch((error) => {
         if(error.error === null)
@@ -92,7 +106,4 @@ export class PortfolioPageComponent implements OnInit{
       }
     );
   }
-
 }
-
-

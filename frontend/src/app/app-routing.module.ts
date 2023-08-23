@@ -1,12 +1,13 @@
-import { Component, NgModule } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { LoginsignuppageComponent } from './loginsignuppage/loginsignuppage.component';
 import { MychartComponent } from './mychart/mychart.component';
 import { HomeComponent } from './home/home.component';
-import { PortfolioPageComponent } from './portfolio-page/portfolio-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
 import { LogOutPageComponent } from './log-out-page/log-out-page.component';
-
+import { PortfolioPageComponent } from './portfolio-page/portfolio-page.component'
+import { StocksPageComponent } from './stocks-page/stocks-page.component';
+ 
 const routes: Routes = [
   {
     path: '',
@@ -15,10 +16,6 @@ const routes: Routes = [
   {
     path: 'account',
     component: LoginsignuppageComponent
-  },
-  {
-    path: 'charts',
-    component: MychartComponent
   },
   {
     path: 'portfolio',
@@ -31,6 +28,14 @@ const routes: Routes = [
   {
     path: 'logout',
     component: LogOutPageComponent
+  },
+  {
+    path: 'viewstocks',
+    component: StocksPageComponent
+  },
+  {
+    path: 'viewstocks/:ticker', 
+    component: MychartComponent
   }
 ];
 

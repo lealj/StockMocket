@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { Router, ActivatedRoute } from '@angular/router';
-import { CookieServices } from "../cookie.service";
-import {catchError} from "rxjs";
 import { LogOutPageService } from './log-out-page.service'
 
 

@@ -15,8 +15,6 @@ type UserStocks struct {
 	Username string `json:"username"`
 	Ticker   string `json:"ticker"`
 	Shares   int    `json:"shares"`
-	// can add variable here summing the prices paid for the stocks, for the calculation of "gains/losses"
-	// so 1 share bought at $50, another share bought at $75 -> $125 total. Future share worth $100. So profit = 100x2 - (50+75) = 200-125=$75
 }
 
 /*
@@ -68,7 +66,7 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 	}
 
 	// Calculate total order cost
-	totalOrderCost := float64(pricePerShare * float64(sharesInOrder))
+	totalOrderCost := float32(pricePerShare * float32(sharesInOrder))
 
 	// Deny order if user doesn't have the funds
 	if totalOrderCost > funds {
@@ -107,8 +105,12 @@ func PurchaseStock(writer http.ResponseWriter, router *http.Request) {
 
 	// Repopulate a userstocks object to make sure it was recorded, and to send in JSON
 	var ret UserStocks
-	DB.Where("username = ? AND ticker = ?", newPurchaseOrder.Username, newPurchaseOrder.Ticker).Last(ret)
-	json.NewEncoder(writer).Encode(ret)
+
+	if err := DB.Where("username = ? AND ticker = ?", newPurchaseOrder.Username, newPurchaseOrder.Ticker).Last(&ret).Error; err != nil {
+		fmt.Printf("Error: %+v\n", err)
+	} else {
+		json.NewEncoder(writer).Encode(&ret)
+	}
 }
 
 /*
@@ -176,7 +178,7 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 	// Update Funds
 	pricePerShare := stock.Price
 	sharesInOrder := newSellOrder.Shares
-	totalOrderValue := float64(pricePerShare * float64(sharesInOrder))
+	totalOrderValue := float32(pricePerShare * float32(sharesInOrder))
 	credentials.Funds = credentials.Funds + totalOrderValue
 	DB.Save(&credentials)
 
@@ -202,8 +204,8 @@ func SellStock(writer http.ResponseWriter, router *http.Request) {
 type StockTickerShares struct {
 	Ticker string  `json:"ticker"`
 	Shares int     `json:"shares"`
-	Price  float64 `json:"price"`
-	Change float64 `json:"change"` //a percent
+	Price  float32 `json:"price"`
+	Change float32 `json:"change"` //a percent
 }
 
 // this returns slices of information in the format of the above struct

@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -16,7 +17,7 @@ export class ShareService {
       shares: quantity
     };
 
-    return this.client.post(url, body, {observe: 'response'}).toPromise();
+    return firstValueFrom(this.client.post(url, body, {observe: 'response'}));
   }
 
   Sell(username: string, ticker: string, quantity: number): Promise <any>{
@@ -27,6 +28,6 @@ export class ShareService {
       shares: quantity
     };
 
-    return this.client.post(url, body, {observe: 'response'}).toPromise();
+    return firstValueFrom(this.client.post(url, body, {observe: 'response'}));
   }
 }

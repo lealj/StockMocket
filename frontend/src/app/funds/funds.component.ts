@@ -1,6 +1,6 @@
 import { LoginSignUpService } from '../loginsignuppage/loginsignuppage.service'
 import { Component, OnInit } from '@angular/core';
-import { FundsService } from '../funds.service';
+import { FundsService } from '../services/funds.service';
 
 @Component({
   selector: 'app-funds',

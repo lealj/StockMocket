@@ -2,7 +2,7 @@ import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
-import {JwtModule} from '@auth0/angular-jwt';
+import { JwtModule } from '@auth0/angular-jwt';
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -11,10 +11,11 @@ import { LoginsignuppageComponent } from './loginsignuppage/loginsignuppage.comp
 import { HeaderComponent } from './header/header.component';
 import { BuySellButtonComponent } from './buy-sell-button/buy-sell-button.component';
 import { HomeComponent } from './home/home.component';
-import { PortfolioPageComponent } from './portfolio-page/portfolio-page.component';
 import { AboutPageComponent } from './about-page/about-page.component';
 import { LogOutPageComponent } from './log-out-page/log-out-page.component';
 import { FundsComponent } from './funds/funds.component';
+import { PortfolioPageComponent } from './portfolio-page/portfolio-page.component';
+import { StocksPageComponent } from './stocks-page/stocks-page.component';
 
 export function tokenGetter() {
   return localStorage.getItem('token');
@@ -28,10 +29,11 @@ export function tokenGetter() {
     HeaderComponent,
     BuySellButtonComponent,
     HomeComponent,
-    PortfolioPageComponent,
     AboutPageComponent,
+    PortfolioPageComponent,
     LogOutPageComponent,
     FundsComponent,
+    StocksPageComponent,
   ],
   imports: [
     BrowserModule,

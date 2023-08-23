@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 import { LoginSignUpService } from "./loginsignuppage.service"
 import { Router, ActivatedRoute } from '@angular/router';
-import { CookieServices } from "../cookie.service";
-import {catchError} from "rxjs";
 
 @Component({
   selector: 'app-loginsignuppage',

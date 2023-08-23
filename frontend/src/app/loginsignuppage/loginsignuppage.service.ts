@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpResponse } from '@angular/common/http';
-import {Observable, observable} from "rxjs";
+import { firstValueFrom } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -13,31 +13,31 @@ export class LoginSignUpService {
   AddOnLogin(username: string, password: string): Promise<any> {
     // accountInfo is passed to post request, and the http response is returned.
     const acctInfo = {username: username, password: password};
-    return this.client.post("/credentials/login", acctInfo, {withCredentials: true, observe: 'response'}).toPromise();
+    return firstValueFrom(this.client.post("/credentials/login", acctInfo, {withCredentials: true, observe: 'response'}));
   }
 
   AddOnSignUp(username: string, password: string): Promise<any>
   {
     const acctInfo = { username: username, password: password };
-    return this.client.post("/credentials/signup", acctInfo, {withCredentials: true, observe: 'response'}).toPromise();
+    return firstValueFrom(this.client.post("/credentials/signup", acctInfo, {withCredentials: true, observe: 'response'}));
   }
 
   DeleteUNandPW(username: string): Promise<any>
   {
     const acctInfo = { username: username };
-    return this.client.post("/credentials/delete", acctInfo, {withCredentials: true, observe: 'response'}).toPromise();
+    return firstValueFrom(this.client.post("/credentials/delete", acctInfo, {withCredentials: true, observe: 'response'}));
   }
 
   verify(): Promise<boolean> {
-    return this.client.get("/credentials/authorize", { withCredentials: true }).toPromise().then(() => true)
+    return firstValueFrom(this.client.get("/credentials/authorize", { withCredentials: true })).then(() => true)
       .catch(() => false);
   }
 
   claimData(): Promise<any> {
-    return this.client.get("/credentials/authorize", {withCredentials: true}).toPromise()
+    return firstValueFrom(this.client.get("/credentials/authorize", {withCredentials: true}))
   }
 
   async logout(): Promise<void> {
-    await this.client.get("/credentials/logout",{ withCredentials: true }).toPromise()
+    await firstValueFrom(this.client.get("/credentials/logout",{ withCredentials: true }))
   }
 }

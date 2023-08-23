@@ -10,11 +10,11 @@ import (
 var DB *gorm.DB //database variable
 var err error
 
-// AWS db connection
-const DNS = "sql9624027:WHUUJxfxAJ@tcp(sql9.freemysqlhosting.net:3306)/sql9624027?charset=utf8&parseTime=True&loc=Local"
+// Online db connection. Must be restarted. AWS was removed as no longer free.
+//const DNS = "sql9624027:WHUUJxfxAJ@tcp(sql9.freemysqlhosting.net:3306)/sql9624027?charset=utf8&parseTime=True&loc=Local"
 
 // local db connection -(fill in password and remove "<>", create "godb" schema in your database)
-//const DNS = "root:<password>@tcp(localhost:3306)/godb?charset=utf8&parseTime=True&loc=Local"
+const DNS = "root:cici1998@tcp(localhost:3306)/godb?charset=utf8&parseTime=True&loc=Local"
 
 // Initializes tables if necessary
 func InitialMigration() {

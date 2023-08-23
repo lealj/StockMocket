@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { HttpClient, HttpResponse } from '@angular/common/http';
-import {Observable, observable} from "rxjs";
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from "rxjs";
 import { LoginSignUpService } from '../loginsignuppage/loginsignuppage.service'
 
 @Injectable({
@@ -19,7 +19,7 @@ export class PortfolioPageService {
         const userData = await this.loginSignUpService.claimData()
         const username = userData.username
         const accntInfo = { username: username}
-        return this.client.post("/portfoliovalue", accntInfo, {observe: 'response'}).toPromise();
+        return firstValueFrom(this.client.post("/portfoliovalue", accntInfo, {observe: 'response'}));
     }
 
     async getOwnedStocks(): Promise<any>
@@ -27,7 +27,7 @@ export class PortfolioPageService {
         const userData = await this.loginSignUpService.claimData()
         const username = userData.username
         const accntInfo = { username: username}
-        return this.client.post("/userstock/owned", accntInfo, {observe: 'response'}).toPromise();
+        return firstValueFrom(this.client.post("/userstock/owned", accntInfo, {observe: 'response'}));
     }
 
     async getUserLogs(): Promise<any>
@@ -35,6 +35,6 @@ export class PortfolioPageService {
         const userData = await this.loginSignUpService.claimData()
         const username = userData.username
         const accntInfo = { username: username}
-        return this.client.post("/portfoliohistory", accntInfo, {observe: 'response'}).toPromise();
+        return firstValueFrom(this.client.post("/portfoliohistory", accntInfo, {observe: 'response'}));
     }
 }

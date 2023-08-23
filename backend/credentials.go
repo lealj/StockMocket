@@ -4,10 +4,11 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"github.com/dgrijalva/jwt-go"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/gorilla/securecookie"
 	"gorm.io/gorm"
@@ -23,7 +24,7 @@ type Credentials struct {
 
 	Username string  `json:"username"`
 	Password string  `json:"password"`
-	Funds    float64 `json:"funds"`
+	Funds    float32 `json:"funds"`
 }
 
 func login(writer http.ResponseWriter, router *http.Request) {

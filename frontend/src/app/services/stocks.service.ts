@@ -10,9 +10,9 @@ export class StocksService {
 
   constructor(private http: HttpClient) { }
 
-  getStockData(startMonth: number, startDay: number, startYear: number, endMonth: number, endDay: number, endYear: number): Observable<any[]> {
+  getStockData(ticker: string, startMonth: number, startDay: number, startYear: number, endMonth: number, endDay: number, endYear: number): Observable<any[]> {
     const query = {
-      ticker: 'MSFT',
+      ticker: ticker,
       start_month: startMonth,
       start_day: startDay,
       start_year: startYear,

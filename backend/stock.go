@@ -1,15 +1,15 @@
 package main
 
 import (
+	"context"
 	"encoding/json"
 	"fmt"
 	"net/http"
 	"time"
 
-	"github.com/piquette/finance-go/chart"
-	"github.com/piquette/finance-go/datetime"
-	"github.com/piquette/finance-go/quote"
 	"gorm.io/gorm"
+
+	finnhub "github.com/Finnhub-Stock-API/finnhub-go/v2"
 )
 
 // For general stock information (fortune 500)
@@ -17,7 +17,12 @@ import (
 type Stock struct {
 	gorm.Model
 	Ticker string  `json:"ticker"`
-	Price  float64 `json:"price"`
+	Price  float32 `json:"price"`
+}
+
+type Stock_no_gorm struct {
+	Ticker string  `json:"ticker"`
+	Price  float32 `json:"price"`
 }
 
 type Query struct {
@@ -30,8 +35,26 @@ type Query struct {
 	EndYear    int    `json:"end_year"`
 }
 
-func GetStockPrice(ticker string) float64 {
-	var price float64
+func SaveStockPrice(s Stock) {
+	// load entry for stock in db
+	var stock_db_entry Stock
+	DB.Where("ticker = ?", s.Ticker).First(&stock_db_entry)
+	// update price
+	stock_db_entry.Price = s.Price
+	// update time
+	t := time.Now()
+	t_f := t.Format("2006-01-02 15:04:05")
+	createdAt, err := time.Parse("2006-01-02 15:04:05", t_f)
+	if err != nil {
+		fmt.Printf("error parsing time: %v", err)
+	}
+	// save in database
+	stock_db_entry.CreatedAt = createdAt
+	DB.Save(&stock_db_entry)
+}
+
+func GetStockPrice(ticker string) float32 {
+	var price float32
 	DB.Table("stocks").Where("ticker = ?", ticker).Select("price").Scan(&price)
 	return price
 }
@@ -39,8 +62,9 @@ func GetStockPrice(ticker string) float64 {
 func GetStocks(writer http.ResponseWriter, rout *http.Request) {
 	writer.Header().Set("Content-Type", "application/json")
 	var stocks []Stock
-	DB.Find(&stocks)
-	json.NewEncoder(writer).Encode(stocks)
+	var stocksResponse []Stock_no_gorm
+	DB.Find(&stocks).Select("ticker, price").Scan(&stocksResponse)
+	json.NewEncoder(writer).Encode(stocksResponse)
 }
 
 func GetStock(writer http.ResponseWriter, rout *http.Request) {
@@ -51,64 +75,36 @@ func GetStock(writer http.ResponseWriter, rout *http.Request) {
 	json.NewEncoder(writer).Encode(stock)
 }
 
-// update stocks with today's price
+func InitFinnhubClient() *finnhub.DefaultApiService {
+	cfg := finnhub.NewConfiguration()
+	cfg.AddDefaultHeader("X-Finnhub-Token", "ci87gu9r01qnrgm32fggci87gu9r01qnrgm32fh0")
+	return finnhub.NewAPIClient(cfg).DefaultApi
+}
+
 func UpdateStocks() {
-	fmt.Printf("Updating stocks...\n")
-	// List of tickers in database
+	// init client
+	finnhubClient := InitFinnhubClient()
+
 	tickers := []string{"KO", "MSFT", "LMT", "AAPL", "WFC"}
-	var price float64
 	for _, ticker := range tickers {
-		q, err := quote.Get(ticker)
+		res, _, err := finnhubClient.Quote(context.Background()).Symbol(ticker).Execute()
 		if err != nil {
-			fmt.Printf("Error getting quote for %s: %v\n", ticker, err)
-			fmt.Printf("Attempting Query instead...\n")
-
-			startmonth := int(time.Now().Month())
-			endmonth := startmonth
-
-			startday := int(time.Now().Day())
-			endday := startday
-
-			startyear := int(time.Now().Year())
-			endyear := startyear
-
-			p := &chart.Params{
-				Symbol:   ticker,
-				Start:    &datetime.Datetime{Month: startmonth, Day: startday, Year: startyear},
-				End:      &datetime.Datetime{Month: endmonth, Day: endday, Year: endyear},
-				Interval: datetime.OneDay,
-			}
-
-			iter := chart.Get(p)
-			// check error
-			if iter.Err() != nil {
-				fmt.Printf("%v\n", iter.Err())
-				return
-			}
-
-			for iter.Next() {
-				close_price_f, _ := iter.Bar().Close.Float64()
-				price = close_price_f
-			}
-
-		} else {
-			price = q.RegularMarketPrice
+			fmt.Printf("Error Updating %s: %v\n", ticker, err)
+			continue
 		}
+
 		var stock Stock
 		DB.Where("ticker = ?", ticker).First(&stock)
-		stock.Price = price
+		stock.Price = float32(*res.C)
 
-		// createdat var created due to error using mock_db. Should only apply if createdat = 0000/null
-		t := time.Now()
-		t_f := t.Format("2006-01-02 15:04:05")
-		createdAt, err := time.Parse("2006-01-02 15:04:05", t_f)
-		if err != nil {
-			fmt.Printf("error parsing time: %v", err)
-		}
-		stock.CreatedAt = createdAt
-		DB.Save(&stock)
+		SaveStockPrice(stock)
 	}
-	fmt.Printf("\nStocks up to date.\n")
+	fmt.Println("Stocks updated.")
+}
+
+type Data struct {
+	Values []float32 `json:"values"`
+	Dates  []string  `json:"dates"`
 }
 
 func QueryStocks(writer http.ResponseWriter, router *http.Request) {
@@ -116,43 +112,30 @@ func QueryStocks(writer http.ResponseWriter, router *http.Request) {
 	var query Query
 	json.NewDecoder(router.Body).Decode(&query)
 
-	// START AND END MUST NOT BE SOLEY ON A WEEKEND/HOLIDAY. Use same start/end values for a single day
-	// Collects the dates and prices for the given start and end dates.
-	p := &chart.Params{
-		Symbol:   query.Ticker,
-		Start:    &datetime.Datetime{Month: query.StartMonth, Day: query.StartDay, Year: query.StartYear},
-		End:      &datetime.Datetime{Month: query.EndMonth, Day: query.EndDay, Year: query.EndYear},
-		Interval: datetime.OneDay,
+	unix_start_interval := time.Date(query.StartYear, time.Month(query.StartMonth), query.StartDay, 0, 0, 0, 0, time.UTC).Unix()
+	unix_end_interval := time.Date(query.EndYear, time.Month(query.EndMonth), query.EndDay, 0, 0, 0, 0, time.UTC).Unix()
+
+	// init client
+	finnhubClient := InitFinnhubClient()
+
+	res, _, err := finnhubClient.StockCandles(context.Background()).Symbol(query.Ticker).Resolution("D").From(unix_start_interval).To(unix_end_interval).Execute()
+
+	if err != nil {
+		fmt.Printf("Error with stock candles: %v\n", err)
+	} else {
+		//get values from *res.C and prepare to send json data.
+		unix_dates := *res.T
+		var dates []string
+		dateFormat := "01-02-2006"
+		for _, value := range unix_dates {
+			dateObj := time.Unix(value, 0)
+			dateStr := dateObj.Format(dateFormat)
+			dates = append(dates, dateStr)
+		}
+		data := Data{
+			Values: *res.C,
+			Dates:  dates,
+		}
+		json.NewEncoder(writer).Encode(data)
 	}
-
-	iter := chart.Get(p)
-	// check error
-	if iter.Err() != nil {
-		writer.WriteHeader(http.StatusBadGateway)
-		fmt.Printf("%v\n", iter.Err())
-		return
-	}
-
-	// struct to store results
-	var results []struct {
-		Date  string  `json:"date"`
-		Price float64 `json:"price"`
-	}
-	// Iterates over period start/end. Gets price and date through unix timestamp conversion
-	for iter.Next() {
-		close_price_f, _ := iter.Bar().Close.Float64()
-
-		// time
-		unix_timestamp := iter.Bar().Timestamp
-		date := time.Unix(int64(unix_timestamp), 0).Format("01-02-2006")
-
-		fmt.Printf("Price: %v Date: %v\n", close_price_f, date)
-
-		// for return json data
-		results = append(results, struct {
-			Date  string  `json:"date"`
-			Price float64 `json:"price"`
-		}{Date: date, Price: close_price_f})
-	}
-	json.NewEncoder(writer).Encode(results)
 }
