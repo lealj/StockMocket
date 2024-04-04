@@ -1,4 +1,4 @@
-module github.com/brianhersh/CEN-Project
+module github.com/lealj/StockMocket
 
 go 1.20
 

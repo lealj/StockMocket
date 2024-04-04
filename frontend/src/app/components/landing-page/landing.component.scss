@@ -1,0 +1,125 @@
+
+.images {
+  display: flex;
+  justify-content: center;
+}
+
+.images2 {
+  display: flex;
+  justify-content: center;
+  width: 300px;
+  margin-right: 20px;
+}
+
+.computer_graphic_img {
+  height: auto;
+  width: 300px;
+  margin-top: 15px;
+}
+
+.analytics_graphic_img {
+  height: auto;
+  width: 450px;
+  margin-bottom: 50px;
+}
+
+.landing_box {
+  background-color: #0c0f19;
+  height: 550px;
+  justify-content: center;
+}
+
+.landing_box2 {
+  background-color: #2f3e62;
+  height: 550px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.landing_box3 {
+  background-color: #181f31;
+  height: 550px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.footer_box {
+  background-color: #0c0f19;
+  height: 300px;
+  justify-content: center;
+  display: flex;
+  align-items: center;
+}
+
+.computer_div {
+  align-items: center;
+  display: flex;
+}
+
+.analytics_div {
+  align-items: flex-start;
+  margin-left: 20px;
+  margin-top: 100px;
+}
+
+.book_div {
+  align-items: center;
+  display: flex;
+}
+
+.book_graphic_img {
+  height: auto;
+  width: 150px;
+  margin-top: 15px;
+  margin-left: -170px;
+}
+
+.title {
+  font-family: Roboto, sans-serif;
+  color: #52D273;
+  text-align: center;
+  font-size: 2.5em;
+}
+
+.body_paragraph {
+  height: auto;
+  width: 1000px;
+  justify-content: center;
+  display: flex;
+  margin: -35px auto;
+}
+
+.body_paragraph2 {
+  height: auto;
+  width: 615px;
+  justify-content: center;
+  display: flex;
+  margin: -35px auto;
+}
+
+p {
+  color: #D6D8DE;
+  font-size: 1.2em;
+  margin: 1.5em 0;
+  width: auto;
+}
+
+a {
+  color: #6BB7EC;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+

@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ShareService } from '../services/share.service';
-import { LoginSignUpService } from '../loginsignuppage/loginsignuppage.service'
+import { LoginSignUpService } from '../services/page-services/loginsignuppage.service'
 import { Router, ActivatedRoute } from '@angular/router';
 
 @Component({

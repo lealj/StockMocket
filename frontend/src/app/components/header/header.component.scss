@@ -1,0 +1,112 @@
+.header {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  background-color: #0c0f19;
+  display: flex;
+  justify-content: left;
+  align-items: center;
+  padding: 1rem;
+}
+
+.logo-img {
+  width: 300px;
+  height: auto;
+  margin-right: 2rem;
+}
+
+.nav-menu {
+  width: 100%;
+  ul {
+    list-style: none;
+    margin: 0;
+    margin-top: -0.5rem;
+    padding: 0;
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  li {
+    margin-top: 20px;
+    margin-right: 1rem;
+  }
+
+  a {
+    text-decoration: none;
+    color: #D6D8DE;
+  }
+  
+  a:hover {
+    text-decoration: underline;
+  }
+
+  .button {
+    text-decoration: none;
+    font-family: inherit;
+    border-radius: 20px; 
+    padding: 8px 16px; 
+    cursor: pointer;
+    width: 100px;
+    transition: background-color 0.3s ease;
+    font-size: 15px;
+    margin-top: -15px;
+  }
+
+  .login button {
+    @extend .button;
+    color: #52D273;
+    background-color: transparent;
+    border: 2px solid #52D273;
+  }
+
+  .signup button {
+    @extend .button;
+    color: #333333;
+    background-color: #52D273;
+    border: 2px solid #52D273;
+  }
+
+  .login {
+    margin-left: auto;
+  }
+
+  .dropdown-icon {
+    width: 50px;
+    height: 50px;
+  }
+
+  .dropdown-toggle {
+    background-color: transparent;
+    width:50px;
+    height:50px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: none;
+    padding: 0;
+    margin-top: 5px;
+  }
+
+  @media only screen and (max-width: 750px) {
+    .nav-menu ul {
+      display: none; // Hide the list elements by default
+      flex-direction: column; // Arrange dropdown items vertically
+    }
+
+    .nav-menu ul.show {
+      display: flex; // Show the list elements when dropdown is active
+    }
+
+    .nav-menu li {
+      margin: 0; // Remove margin from list items
+    }
+
+    .dropdown-toggle {
+      display: block; // Show dropdown toggle button
+    }
+
+    .signup {
+      justify-content: flex-end; // Align signup button to the right
+      margin-left: auto;
+    }
+  }
+}
+

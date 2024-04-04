@@ -1,0 +1,27 @@
+<header class="header">
+  <div class="logo">
+    <img src="assets/stockmocketfont.png" alt="Stock Mocket" class="logo-img">
+  </div>
+  <nav class="nav-menu">
+    <ul>
+      <li *ngIf="!isMobileView">
+        <a href="/portfolio">Features</a>
+      </li>
+      <li *ngIf="!isMobileView">
+        <a href="/viewstocks">About</a>
+      </li>
+      <li *ngIf="!isMobileView">
+        <a href="/about">Contact</a>
+      </li>
+      <li *ngIf="!isMobileView" class="login">
+        <button href="/login">Login</button>
+      </li>
+      <li class="signup">
+        <button href="/signup">Sign up</button>
+      </li>
+      <button *ngIf="isMobileView" class="dropdown-toggle" (click)="toggleDropdown()">
+        <img class="dropdown-icon" src="assets/align-justify.svg"/>
+      </button>
+    </ul>
+  </nav>
+</header>
